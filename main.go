@@ -1,77 +1,178 @@
 package main
 
 import (
-	"fmt"
+	"github.com/fatih/color"
+
 	"flag"
+	"strings"
 	"path/filepath"
 	"os"
-	"strings"
 	"bufio"
-	"sort"
+	"fmt"
+	"errors"
 )
 
-var _path *string
-var _text *string
-var _file *string
+/*********************************************************************************/
+type Search struct {
+	File string
+	Text string
+    Path string
+}
 
-func init() {
-	_path = flag.String("path", "./", "path string")
-	_text = flag.String("text", "", "the word that I have to looking for.")
-	_file = flag.String("file", "", "the file name that I have to looking for.")
+func (s *Search) GetFile() (error, string) {
+	if len(s.File) == 0 {
+		return errors.New("File not defined!"), s.File
+	}
+	return nil, s.File;
+}
 
-	flag.Parse()
-	fmt.Printf("Directory: %s \nFile: %s \nText: %s\n-----------------\n", *_path, *_file, *_text)
+func (s *Search) GetText() (error, string) {
+	if len(s.Text) == 0 {
+		return errors.New("Text not defined!"), s.Text
+	}
+	return nil, s.Text;
+}
+
+func (s *Search) GetPath() string {
+	if len(s.Path) == 0 {
+		return "./"
+	}
+	return s.Path;
 }
 
 
-
-func main() {
-	filepath.Walk(*_path, visitor)
-}
-
-func visitor(path string, file os.FileInfo, _ error) error {
-
-	// check if has filter to file name
-	if len(*_file) != 0 {
-		// if name has no in file path skip this file.
-		if !strings.Contains(path, *_file) {
-			return nil
+func (s *Search) keepFile(path string) bool {
+	if len(s.File) != 0 {
+		if !strings.Contains(path, searching.File) {
+			return false
 		}
 	}
+	return true
+}
+func (s *Search) Range(line string, i int) string {
+	var ii, ie int
+	index := strings.Index(line, s.Text)
 
-	findTextInFile(path)
+	word := line[index:index+len(s.Text)]
 
+	ii = index - i ;
+	ie = len(s.Text) + index + i;
+
+	fontWord := line[ii:index]
+	endWord  := line[index+len(s.Text):ie]
+
+	if ii < 0 { ii = 0 }
+	if ie > len(line) { ie = len(line) }
+
+	red := color.New(color.FgRed).SprintFunc()
+	return fmt.Sprintf("%s%s%s", fontWord, red(word), endWord)
+}
+
+func (s *Search) hasText(path string) (bool, map[int]string) {
+	var lineNumber = make(map[int]string)
+	var i int;
+
+	if len(s.Text) != 0 {
+		file, _ := os.Open(path)
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			i++
+			line := scanner.Text()
+
+			if strings.Contains(line, s.Text) {
+				lineNumber[i] = s.Range(line, 10)
+			}
+		}
+
+		return len(lineNumber) != 0, lineNumber;
+	}
+	return true, lineNumber;
+}
+/*********************************************************************************/
+
+/*********************************************************************************/
+type Item struct {
+	name 	string
+	path 	string
+	comment map[int]string
+}
+type Store struct {
+	ListOfFiles []Item
+}
+func (s *Store) addFile(item Item) {
+	s.ListOfFiles = append(s.ListOfFiles, item)
+}
+/*********************************************************************************/
+
+var searching Search
+var storage   Store = Store{}
+
+func init() {
+	path 		:= flag.String("path", "./", "path string")
+	text 		:= flag.String("text", "", "the word that I have to looking for.")
+	file 		:= flag.String("file", "", "the file name that I have to looking for.")
+	flagNoColor := flag.Bool("no-color", false, "Disable color output")
+
+	flag.Parse()
+
+	if *flagNoColor {
+		color.NoColor = true // disables colorized output
+	}
+
+	searching = Search{File: *file, Text: *text, Path: *path}
+}
+
+func findFilesInPath() {
+	filepath.Walk(searching.Path, visitor)
+}
+// walk in each file
+func visitor(path string, file os.FileInfo, _ error) error {
+	// checkj if can keep the file
+	if !searching.keepFile(path) {
+		return nil
+	}
+
+	// check if has text that I am looking for.
+	hasText, comments := searching.hasText(path);
+	if !hasText {
+		return nil;
+	}
+
+	storage.addFile(Item{file.Name(), path, comments})
 	return nil
 }
 
-func findTextInFile(path string) {
-	file, _ := os.Open(path)
-	defer file.Close()
+func showResult() {
+	green 	:= color.New(color.FgGreen).SprintFunc()
+	blue	:= color.New(color.FgBlue).SprintFunc()
+	cyan 	:= color.New(color.FgCyan).SprintFunc()
 
-	var lineNumber = make(map[int]string)
-	var i int;
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		i++
-		line := scanner.Text()
-
-		if strings.Contains(line, *_text) {
-			lineNumber[i] = line
-		}
+	var nl = func () {
+		color.Cyan("%s\n", strings.Repeat("-", 100))
 	}
 
-	if len(lineNumber) > 0 {
-		fmt.Printf("[File: %s] \n", file.Name())
-		// To store the keys in slice in sorted order
-		var keys []int
-		for k := range lineNumber {
-			keys = append(keys, k)
-		}
-		sort.Ints(keys)
-
-		// To perform the opertion you want
-		for _, k := range keys {
-			fmt.Printf("\t%d: %s \n", k, lineNumber[k])
-		}
+	nl()
+	title := fmt.Sprintf("%s: %s", green("Path"),  cyan(searching.Path))
+	if err, file := searching.GetFile(); err == nil {
+		title = fmt.Sprintf("%s\n%s: %s\n", title, green("File"),  cyan(file))
 	}
+	if err, text := searching.GetText(); err == nil {
+		title = fmt.Sprintf("%s\n%s: %s\n", title, green("Text"),  cyan(text))
+	}
+	fmt.Printf("%s", title)
+	nl()
+	for _, s := range storage.ListOfFiles {
+		fmt.Printf("[%s] %s \n", green("File"), blue(s.path))
+		for line, comment := range s.comment {
+			fmt.Printf("\t[%s] %s\n", green(line), comment)
+		}
+		nl()
+	}
+
+}
+func main() {
+	findFilesInPath()
+	showResult()
 }
