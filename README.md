@@ -14,7 +14,8 @@ Find File or text in file with go language.
 ## Parameters 
 ##### Helper: 
 ```
-	Usage of ./main:
+  $ ff -h
+  Usage of ff:
 	  -f string
 	    	the file name that I have to looking for.
 	  -no-color
@@ -29,20 +30,16 @@ Find File or text in file with go language.
 
 -----------------------
 ## Compile 
-	compile files from different platforms
+ compile files from different platforms
 
 #### Linux 
 
-	```$ env GOOS=linux GOARCH=arm GOARM=7 go build -o ff main.go``` 
+	$ env GOOS=linux GOARCH=arm GOARM=7 go build -o ff main.go
 
 #### MacOs
 
-	```$ env GOOS=darwin GOARCH=386 go build -o ff main.go```
+	$ env GOOS=darwin GOARCH=386 go build -o ff main.go
 
 #### Windows 
 	
-	```$ env GOOS=windows GOARCH=386 go build -o ff.exe main.go```
-
-
-
-
+	$ env GOOS=windows GOARCH=386 go build -o ff.exe main.go
