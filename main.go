@@ -14,9 +14,10 @@ import (
 
 /*********************************************************************************/
 type Search struct {
-	File string
-	Text string
-    Path string
+	File  string
+	Text  string
+    Path  string
+	Reach int
 }
 
 func (s *Search) GetFile() (error, string) {
@@ -58,11 +59,11 @@ func (s *Search) Range(line string, i int) string {
 	ii = index - i ;
 	ie = len(s.Text) + index + i;
 
-	fontWord := line[ii:index]
-	endWord  := line[index+len(s.Text):ie]
-
 	if ii < 0 { ii = 0 }
 	if ie > len(line) { ie = len(line) }
+
+	fontWord := line[ii:index]
+	endWord  := line[index+len(s.Text):ie]
 
 	red := color.New(color.FgRed).SprintFunc()
 	return fmt.Sprintf("%s%s%s", fontWord, red(word), endWord)
@@ -82,7 +83,7 @@ func (s *Search) hasText(path string) (bool, map[int]string) {
 			line := scanner.Text()
 
 			if strings.Contains(line, s.Text) {
-				lineNumber[i] = s.Range(line, 10)
+				lineNumber[i] = s.Range(line, searching.Reach)
 			}
 		}
 
@@ -110,9 +111,10 @@ var searching Search
 var storage   Store = Store{}
 
 func init() {
-	path 		:= flag.String("path", "./", "path string")
-	text 		:= flag.String("text", "", "the word that I have to looking for.")
-	file 		:= flag.String("file", "", "the file name that I have to looking for.")
+	path 		:= flag.String("p", 	 "./", 	"path string")
+	text 		:= flag.String("t", 	 "", 	"the word that I have to looking for.")
+	file 		:= flag.String("f", 	 "", 	"the file name that I have to looking for.")
+	reach	    := flag.Int("r", 		 10, 	"range between start and end of the line")
 	flagNoColor := flag.Bool("no-color", false, "Disable color output")
 
 	flag.Parse()
@@ -121,7 +123,7 @@ func init() {
 		color.NoColor = true // disables colorized output
 	}
 
-	searching = Search{File: *file, Text: *text, Path: *path}
+	searching = Search{File: *file, Text: *text, Path: *path, Reach: *reach}
 }
 
 func findFilesInPath() {
@@ -156,12 +158,13 @@ func showResult() {
 	nl()
 	title := fmt.Sprintf("%s: %s", green("Path"),  cyan(searching.Path))
 	if err, file := searching.GetFile(); err == nil {
-		title = fmt.Sprintf("%s\n%s: %s\n", title, green("File"),  cyan(file))
+		title = fmt.Sprintf("%s\n%s: %s", title, green("File"),  cyan(file))
 	}
 	if err, text := searching.GetText(); err == nil {
-		title = fmt.Sprintf("%s\n%s: %s\n", title, green("Text"),  cyan(text))
+		title = fmt.Sprintf("%s\n%s: %s", title, green("Text"),  cyan(text))
 	}
-	fmt.Printf("%s", title)
+
+	fmt.Printf("%s\n", title)
 	nl()
 	for _, s := range storage.ListOfFiles {
 		fmt.Printf("[%s] %s \n", green("File"), blue(s.path))
