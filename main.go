@@ -74,23 +74,27 @@ func (s *Search) hasText(path string) (bool, map[int]string) {
 	var lineNumber = make(map[int]string)
 	var i int;
 
-	if len(s.Text) != 0 {
-		file, _ := os.Open(path)
-		defer file.Close()
-
-		scanner := bufio.NewScanner(file)
-		for scanner.Scan() {
-			i++
-			line := scanner.Text()
-
-			if strings.Contains(line, s.Text) {
-				lineNumber[i] = s.Range(line, searching.Reach)
-			}
-		}
-
-		return len(lineNumber) != 0, lineNumber;
+	if len(s.Text) == 0 {
+		return true, lineNumber;
 	}
-	return true, lineNumber;
+
+	file, err := os.Open(path)
+	if err != nil {
+		lineNumber[-1] = fmt.Sprintf("%s", err.Error())
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		i++
+		line := scanner.Text()
+
+		if strings.Contains(line, s.Text) {
+			lineNumber[i] = s.Range(line, searching.Reach)
+		}
+	}
+
+	return len(lineNumber) != 0, lineNumber;
 }
 /*********************************************************************************/
 
@@ -157,6 +161,7 @@ func visitor(path string, file os.FileInfo, _ error) error {
 }
 
 func showResult() {
+	red		:= color.New(color.FgRed).SprintFunc()
 	green 	:= color.New(color.FgGreen).SprintFunc()
 	blue	:= color.New(color.FgBlue).SprintFunc()
 	cyan 	:= color.New(color.FgCyan).SprintFunc()
@@ -179,6 +184,10 @@ func showResult() {
 	for _, s := range storage.ListOfFiles {
 		fmt.Printf("[%s] %s \n", green("File"), blue(s.path))
 		for line, comment := range s.comment {
+			if line == -1 {
+				fmt.Printf("\t[%s] %s\n", green("ERROR"), red(comment))
+				continue
+			}
 			fmt.Printf("\t[%s] %s\n", green(line), comment)
 		}
 		if len(s.comment) > 0 {
