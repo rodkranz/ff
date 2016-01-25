@@ -8,6 +8,8 @@ Find File or text in file with go language.
 
 * Find text or file name 
 * Version: 0.0.1
+* License: ISC
+
 
 -----------------------
 

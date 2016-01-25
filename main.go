@@ -204,6 +204,7 @@ func showVersion() {
 --------------------------------------------------------------------------------------
  Version : 1.0.0
  Language: Go Language
+ License : ISC
  Project : https://bitbucket.org/rkranz/gofindfileortext
  Contact : dev.rodrigo.lopes@gmail.com
  Linkedin: https://www.linkedin.com/in/rodrigo-lopes-76533724
