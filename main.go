@@ -10,6 +10,7 @@ import (
 	"bufio"
 	"fmt"
 	"errors"
+	"regexp"
 )
 
 /*********************************************************************************/
@@ -111,6 +112,15 @@ var searching Search
 var storage   Store = Store{}
 
 func init() {
+
+	// if ask about version
+	re := regexp.MustCompile("^(-v|--version)$")
+	for _, arg := range os.Args {
+		if len(re.FindAllString(arg, -1)) != 0 {
+			showVersion()
+		}
+	}
+
 	path 		:= flag.String("p", 	 "./", 	"path string")
 	text 		:= flag.String("t", 	 "", 	"the word that I have to looking for.")
 	file 		:= flag.String("f", 	 "", 	"the file name that I have to looking for.")
@@ -171,10 +181,29 @@ func showResult() {
 		for line, comment := range s.comment {
 			fmt.Printf("\t[%s] %s\n", green(line), comment)
 		}
-		nl()
+		if len(s.comment) > 0 {
+			nl()
+		}
 	}
 
 }
+
+func showVersion() {
+	text := `--------------------------------------------------------------------------------------
+ This program has writen by Rodrigo Lopes <dev.rodrigo.lopes@gmail.com>
+ just to learn little more about GO language.
+--------------------------------------------------------------------------------------
+ Version : 1.0.0
+ Language: Go Language
+ Project : https://bitbucket.org/rkranz/gofindfileortext
+ Contact : dev.rodrigo.lopes@gmail.com
+ Linkedin: https://www.linkedin.com/in/rodrigo-lopes-76533724
+--------------------------------------------------------------------------------------
+`
+	fmt.Println(text)
+	os.Exit(0)
+}
+
 func main() {
 	findFilesInPath()
 	showResult()
