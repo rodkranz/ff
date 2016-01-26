@@ -119,10 +119,8 @@ var storage   Store = Store{}
 func init() {
 	// if ask about version
 	re := regexp.MustCompile("^(-v|--version)$")
-	for _, arg := range os.Args {
-		if len(re.FindAllString(arg, -1)) != 0 {
-			showVersion()
-		}
+	if len(re.FindAllString(strings.Join(os.Args[1:], " "), -1)) != 0 {
+		showVersion()
 	}
 
 	path 		:= flag.String("p", 	 "./", 	"The directory path")
@@ -149,6 +147,12 @@ func init() {
 		WithRegex: *regex,
 	}
 
+	if len(os.Args) == 2 {
+		if len(searching.Text) == 0 {
+			searching.Text = os.Args[1]
+		}
+	}
+	
 	if *regex {
 		searching.Regexp = regexp.MustCompile(*text);
 	}
