@@ -11,14 +11,24 @@ import (
 	"fmt"
 	"errors"
 	"regexp"
+	"time"
 )
+
+var myDebugMode = false
+
+var red	= color.New(color.FgRed).SprintFunc()
+var green = color.New(color.FgGreen).SprintFunc()
+var blue= color.New(color.FgBlue).SprintFunc()
+var cyan = color.New(color.FgCyan).SprintFunc()
 
 /*********************************************************************************/
 type Search struct {
-	File  string
-	Text  string
-    Path  string
-	Reach int
+	File  		string
+	Text  		string
+    Path  		string
+	WithRegex 	bool
+	Reach 		int
+	Regexp 		*regexp.Regexp
 }
 
 func (s *Search) GetFile() (error, string) {
@@ -51,24 +61,6 @@ func (s *Search) keepFile(path string) bool {
 	}
 	return true
 }
-func (s *Search) Range(line string, i int) string {
-	var ii, ie int
-	index := strings.Index(line, s.Text)
-
-	word := line[index:index+len(s.Text)]
-
-	ii = index - i ;
-	ie = len(s.Text) + index + i;
-
-	if ii < 0 { ii = 0 }
-	if ie > len(line) { ie = len(line) }
-
-	fontWord := line[ii:index]
-	endWord  := line[index+len(s.Text):ie]
-
-	red := color.New(color.FgRed).SprintFunc()
-	return fmt.Sprintf("%s%s%s", fontWord, red(word), endWord)
-}
 
 func (s *Search) hasText(path string) (bool, map[int]string) {
 	var lineNumber = make(map[int]string)
@@ -81,16 +73,25 @@ func (s *Search) hasText(path string) (bool, map[int]string) {
 	file, err := os.Open(path)
 	if err != nil {
 		lineNumber[-1] = fmt.Sprintf("%s", err.Error())
+		return false, lineNumber;
 	}
 	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
+	scanner  := bufio.NewScanner(file)
 	for scanner.Scan() {
 		i++
 		line := scanner.Text()
-
-		if strings.Contains(line, s.Text) {
-			lineNumber[i] = s.Range(line, searching.Reach)
+		if s.WithRegex {
+			words := searching.Regexp.FindAllString(line, -1)
+			if len(words) > 0 {
+				for _, v := range words {
+					lineNumber[i] = Range(v, line, searching.Reach)
+				}
+			}
+		} else {
+			if strings.Contains(line, s.Text) {
+				lineNumber[i] = Range(s.Text, line, searching.Reach)
+			}
 		}
 	}
 
@@ -116,7 +117,6 @@ var searching Search
 var storage   Store = Store{}
 
 func init() {
-
 	// if ask about version
 	re := regexp.MustCompile("^(-v|--version)$")
 	for _, arg := range os.Args {
@@ -125,19 +125,33 @@ func init() {
 		}
 	}
 
-	path 		:= flag.String("p", 	 "./", 	"path string")
-	text 		:= flag.String("t", 	 "", 	"the word that I have to looking for.")
-	file 		:= flag.String("f", 	 "", 	"the file name that I have to looking for.")
-	reach	    := flag.Int("r", 		 10, 	"range between start and end of the line")
+	path 		:= flag.String("p", 	 "./", 	"The directory path")
+	text 		:= flag.String("t", 	 "", 	"what I am searching")
+	regex 		:= flag.Bool("r", 	 	 false, "Search by regex")
+	file 		:= flag.String("f", 	 "", 	"Filter by name of file or the file name")
+	reach	    := flag.Int("a", 		 10, 	"Range around of the word that I found.")
+	debugMode	:= flag.Bool("d", 	 	 false, "Show Debug Mode")
 	flagNoColor := flag.Bool("no-color", false, "Disable color output")
 
 	flag.Parse()
+
+	myDebugMode = *debugMode
 
 	if *flagNoColor {
 		color.NoColor = true // disables colorized output
 	}
 
-	searching = Search{File: *file, Text: *text, Path: *path, Reach: *reach}
+	searching = Search{
+		File: *file,
+		Text: *text,
+		Path: *path,
+		Reach: *reach,
+		WithRegex: *regex,
+	}
+
+	if *regex {
+		searching.Regexp = regexp.MustCompile(*text);
+	}
 }
 
 func findFilesInPath() {
@@ -156,45 +170,69 @@ func visitor(path string, file os.FileInfo, _ error) error {
 		return nil;
 	}
 
+
 	storage.addFile(Item{file.Name(), path, comments})
 	return nil
 }
 
 func showResult() {
-	red		:= color.New(color.FgRed).SprintFunc()
-	green 	:= color.New(color.FgGreen).SprintFunc()
-	blue	:= color.New(color.FgBlue).SprintFunc()
-	cyan 	:= color.New(color.FgCyan).SprintFunc()
-
 	var nl = func () {
-		color.Cyan("%s\n", strings.Repeat("-", 100))
+		color.Cyan("\r%s\n", strings.Repeat("-", 100))
 	}
 
 	nl()
-	title := fmt.Sprintf("%s: %s", green("Path"),  cyan(searching.Path))
+	title := fmt.Sprintf("%s : %s", green("Path"),  cyan(searching.Path))
 	if err, file := searching.GetFile(); err == nil {
-		title = fmt.Sprintf("%s\n%s: %s", title, green("File"),  cyan(file))
+		title = fmt.Sprintf("%s\n%s : %s", title, green("File"),  cyan(file))
 	}
 	if err, text := searching.GetText(); err == nil {
-		title = fmt.Sprintf("%s\n%s: %s", title, green("Text"),  cyan(text))
+		t := green("Text ")
+		if searching.WithRegex {
+			t = green("Regex")
+		}
+		title = fmt.Sprintf("%s\n%s: %s", title, t,  cyan(text))
+	}
+
+//	 To store the keys in slice in sorted order
+	keys := make([]int, 0)
+	for k := range storage.ListOfFiles {
+		keys = append(keys, k)
 	}
 
 	fmt.Printf("%s\n", title)
 	nl()
-	for _, s := range storage.ListOfFiles {
-		fmt.Printf("[%s] %s \n", green("File"), blue(s.path))
-		for line, comment := range s.comment {
+	for _, k := range keys {
+		fmt.Printf("[%s] %s \n", green("File"), blue(storage.ListOfFiles[k].path))
+		for line, comment := range storage.ListOfFiles[k].comment {
 			if line == -1 {
 				fmt.Printf("\t[%s] %s\n", green("ERROR"), red(comment))
 				continue
 			}
 			fmt.Printf("\t[%s] %s\n", green(line), comment)
 		}
-		if len(s.comment) > 0 {
+		if len(storage.ListOfFiles[k].comment) > 0 {
 			nl()
 		}
 	}
+}
 
+func Range(text, line string, i int) string {
+	var ii, ie int
+	index := strings.Index(line, text)
+
+	word := line[index:index+len(text)]
+
+	ii = index - i ;
+	ie = len(text) + index + i;
+
+	if ii < 0 { ii = 0 }
+	if ie > len(line) { ie = len(line) }
+
+	fontWord := line[ii:index]
+	endWord  := line[index+len(text):ie]
+
+	red := color.New(color.FgRed).SprintFunc()
+	return fmt.Sprintf("%s%s%s", fontWord, red(word), endWord)
 }
 
 func showVersion() {
@@ -202,7 +240,7 @@ func showVersion() {
  This program has writen by Rodrigo Lopes <dev.rodrigo.lopes@gmail.com>
  just to learn little more about GO language.
 --------------------------------------------------------------------------------------
- Version : 1.0.0
+ Version : 1.0.1
  Language: Go Language
  License : ISC
  Project : https://bitbucket.org/rkranz/gofindfileortext
@@ -215,6 +253,13 @@ func showVersion() {
 }
 
 func main() {
+	start := time.Now()
+	fmt.Printf("\rSearching please wait...")
+
 	findFilesInPath()
 	showResult()
+
+	if myDebugMode {
+		fmt.Printf("final Execution took %s\n", green(time.Since(start)))
+	}
 }
