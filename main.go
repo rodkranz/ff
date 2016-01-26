@@ -147,14 +147,18 @@ func init() {
 		WithRegex: *regex,
 	}
 
-	if len(os.Args) == 2 {
-		if len(searching.Text) == 0 {
-			searching.Text = os.Args[1]
-		}
-	}
-	
 	if *regex {
 		searching.Regexp = regexp.MustCompile(*text);
+	}
+
+	if len(os.Args) == 2 {
+		if len(searching.Text) != 0 {
+			return
+		}
+
+		if os.Args[1][0] != 45 {
+			searching.Text = os.Args[1]
+		}
 	}
 }
 

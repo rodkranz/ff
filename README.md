@@ -9,7 +9,6 @@ Find File or text in file with go language.
 * Version: 0.0.1
 * License: ISC
 
-
 -----------------------
 
 ## Parameters 
@@ -170,6 +169,50 @@ Show the version
 ### Parameter -h
 
 Show the helper
+
+## Time Execution
+	
+ff running looking for word rlopes
+
+	$ time ff -t rlopes
+	----------------------------------------------------------------------------------------------------
+	Path : ./
+	Text : rlopes
+	----------------------------------------------------------------------------------------------------
+	[File] resources/css/toastr.css 
+		[144] .rlopes { lorem i
+	----------------------------------------------------------------------------------------------------
+	[File] services.dev.ini 
+		[3] omain = ".rlopes.realestat
+		[6] = 'http://rlopes.realestat
+		[15] = 'http://rlopes.realestat
+	----------------------------------------------------------------------------------------------------
+	ff -t rlopes  0,02s user 0,00s system 75% cpu 0,032 total
+
+
+
+ack running looking for word rlopes
+	
+	$ time ack rlopes
+	resources/css/toastr.css
+	144:.rlopes { lorem ipsum }
+
+	services.dev.ini
+	3:domain = ".rlopes.realestateid.fixe"
+	6:baseUri        = 'http://rlopes.realestateid.fixe'
+	15:baseUri        = 'http://rlopes.realestateid.fixe'
+	ack .rlopes  0,06s user 0,02s system 93% cpu 0,077 total
+
+
+
+grep running looking for word rlopes
+
+	$ time grep -i -E -r 'rlopes' ./*                                                                                                                                                                                        master  ✈
+	./resources/css/toastr.css:.rlopes { lorem ipsum }
+	./services.dev.ini:domain = ".rlopes.realestateid.fixe"
+	./services.dev.ini:baseUri        = 'http://rlopes.realestateid.fixe'
+	./services.dev.ini:baseUri        = 'http://rlopes.realestateid.fixe'
+	grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn} -i -E -r 'rlopes' ./  0,30s user 0,00s system 98% cpu 0,308 total
 
 
 -----------------------
