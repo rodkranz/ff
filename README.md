@@ -15,7 +15,6 @@ Find File or text in file with go language.
 
 ##### Helper: 
 
-
 ```
 $ ff -h
 Usage of ./ff:
@@ -55,7 +54,7 @@ Without parameters will show everything in subfolders.
 
 ### Parameter -f
 
-With parameter `-f` will filter by file names. 
+Parameter `-f` of file, this parameter you will define the name of file  that you should like to filter
 
 
 	$ ff -f css
@@ -73,7 +72,7 @@ With parameter `-f` will filter by file names.
 -----------------------
 ### Parameter -t
 
-With parameter `-t` will looking for text inside of file.
+Parameter `-t` of text, this text that you will search inside of file.
 	
 
 	$ ff -t rlopes
@@ -95,7 +94,7 @@ With parameter `-t` will looking for text inside of file.
 
 ### Parameter -r
 
-With parameter `-r` you will find by regular expression
+With parameter `-r` as regex will defined that your `-t` is a regular expression
 
 
 	$ ff -r -t "(rlopes)|(consectetur)"
@@ -121,7 +120,7 @@ With parameter `-r` you will find by regular expression
 
 ### Parameter Combination
 
-you can combinate both of parameters as `-t` and `-f`
+you can match both of the parameters as `-t` and `-f` to create more complex search
 
 
 	$ ff -t "rlopes" -f ini
@@ -141,7 +140,7 @@ you can combinate both of parameters as `-t` and `-f`
 
 ### Parameter -d 
 
-with parameter `-d` you active the debug mode, you can see the time of searching
+The `-d` parameter will active the debug mode, you can see the time of searching (more things coming soon)
 
 
 	$ ff -t "rlopes" -f ini -d
@@ -162,17 +161,22 @@ with parameter `-d` you active the debug mode, you can see the time of searching
 
 ### Parameter -v
 
-Show the version
+Show the version of application
 
 -----------------------
 
 ### Parameter -h
 
-Show the helper
+Show the helper and parameters available
+
+-----------------------
 
 ## Time Execution
 	
-ff running looking for word rlopes
+The all tests was made in the same computer 
+
+-----------------------
+The `ff` running looking for word `rlopes`
 
 	$ time ff -t rlopes
 	----------------------------------------------------------------------------------------------------
@@ -190,8 +194,8 @@ ff running looking for word rlopes
 	ff -t rlopes  0,02s user 0,00s system 75% cpu 0,032 total
 
 
-
-ack running looking for word rlopes
+-----------------------
+The `ack` running looking for word `rlopes`
 	
 	$ time ack rlopes
 	resources/css/toastr.css
@@ -204,10 +208,10 @@ ack running looking for word rlopes
 	ack .rlopes  0,06s user 0,02s system 93% cpu 0,077 total
 
 
+-----------------------
+The `grep` running looking for word `rlopes`
 
-grep running looking for word rlopes
-
-	$ time grep -i -E -r 'rlopes' ./*                                                                                                                                                                                        master  ✈
+	$ time grep -i -E -r 'rlopes' ./*
 	./resources/css/toastr.css:.rlopes { lorem ipsum }
 	./services.dev.ini:domain = ".rlopes.realestateid.fixe"
 	./services.dev.ini:baseUri        = 'http://rlopes.realestateid.fixe'
@@ -216,21 +220,27 @@ grep running looking for word rlopes
 
 
 -----------------------
-## Compile 
+
+## How to Compile it
 
  compile files from different platforms
 
+### requirements 
 
-#### Linux 
+* Go 
+
+#### compiling to *Linux*
 
 	$ env GOOS=linux GOARCH=arm GOARM=7 go build -o ff main.go
 
 
-#### MacOs
+#### compiling to *MacOs*
 
 	$ env GOOS=darwin GOARCH=386 go build -o ff main.go
 
 
-#### Windows 
+#### compiling to *Windows*
 	
 	$ env GOOS=windows GOARCH=386 go build -o ff.exe main.go
+
+
