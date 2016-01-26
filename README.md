@@ -234,7 +234,7 @@ The `grep` running looking for word `rlopes`
 	$ env GOOS=linux GOARCH=arm GOARM=7 go build -o ff main.go
 
 
-#### compiling to *MacOs*
+#### compiling to *MAcOSX*
 
 	$ env GOOS=darwin GOARCH=386 go build -o ff main.go
 
