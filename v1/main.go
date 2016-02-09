@@ -25,7 +25,7 @@ var cyan = color.New(color.FgCyan).SprintFunc()
 type Search struct {
 	File  		string
 	Text  		string
-    Path  		string
+	Path  		string
 	WithRegex 	bool
 	Reach 		int
 	Regexp 		*regexp.Regexp
@@ -107,10 +107,8 @@ type Item struct {
 }
 type Store struct {
 	ListOfFiles []Item
-	TotalLines 	int
 }
 func (s *Store) addFile(item Item) {
-	s.TotalLines += len(item.comment)
 	s.ListOfFiles = append(s.ListOfFiles, item)
 }
 /*********************************************************************************/
@@ -118,6 +116,51 @@ func (s *Store) addFile(item Item) {
 var searching Search
 var storage   Store = Store{}
 
+func init() {
+	// if ask about version
+	re := regexp.MustCompile("^(-v|--version)$")
+	if len(re.FindAllString(strings.Join(os.Args[1:], " "), -1)) != 0 {
+		showVersion()
+	}
+
+	path 		:= flag.String("p", 	 "./", 	"The directory path")
+	text 		:= flag.String("t", 	 "", 	"what I am searching")
+	regex 		:= flag.Bool("r", 	 	 false, "Search by regex")
+	file 		:= flag.String("f", 	 "", 	"Filter by name of file or the file name")
+	reach	    := flag.Int("a", 		 10, 	"Range around of the word that I found.")
+	debugMode	:= flag.Bool("d", 	 	 false, "Show Debug Mode")
+	flagNoColor := flag.Bool("no-color", false, "Disable color output")
+
+	flag.Parse()
+
+	myDebugMode = *debugMode
+
+	if *flagNoColor {
+		color.NoColor = true // disables colorized output
+	}
+
+	searching = Search{
+		File: *file,
+		Text: *text,
+		Path: *path,
+		Reach: *reach,
+		WithRegex: *regex,
+	}
+
+	if *regex {
+		searching.Regexp = regexp.MustCompile(*text);
+	}
+
+	if len(os.Args) == 2 {
+		if len(searching.Text) != 0 {
+			return
+		}
+
+		if os.Args[1][0] != 45 {
+			searching.Text = os.Args[1]
+		}
+	}
+}
 
 func findFilesInPath() {
 	filepath.Walk(searching.Path, visitor)
@@ -135,6 +178,7 @@ func visitor(path string, file os.FileInfo, _ error) error {
 		return nil;
 	}
 
+
 	storage.addFile(Item{file.Name(), path, comments})
 	return nil
 }
@@ -144,13 +188,11 @@ func showResult() {
 		color.Cyan("\r%s\n", strings.Repeat("-", 100))
 	}
 
-	nl() // Line
-
+	nl()
 	title := fmt.Sprintf("%s : %s", green("Path"),  cyan(searching.Path))
 	if err, file := searching.GetFile(); err == nil {
 		title = fmt.Sprintf("%s\n%s : %s", title, green("File"),  cyan(file))
 	}
-
 	if err, text := searching.GetText(); err == nil {
 		t := green("Text ")
 		if searching.WithRegex {
@@ -158,8 +200,6 @@ func showResult() {
 		}
 		title = fmt.Sprintf("%s\n%s: %s", title, t,  cyan(text))
 	}
-
-	title = fmt.Sprintf("%s\n%s: %s", title, green("Total"),  cyan(storage.TotalLines))
 
 	//	 To store the keys in slice in sorted order
 	keys := make([]int, 0)
@@ -177,9 +217,6 @@ func showResult() {
 				continue
 			}
 			fmt.Printf("\t[%s] %s\n", green(line), comment)
-		}
-		if len(storage.ListOfFiles[k].comment) > 0 {
-			fmt.Printf("[%s] %s \n", green("Total"), blue(len(storage.ListOfFiles[k].comment)))
 		}
 		if len(storage.ListOfFiles[k].comment) > 0 {
 			nl()
