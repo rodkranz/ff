@@ -17,19 +17,21 @@ Find File or text in file with go language.
 
 ```
 $ ff -h
-Usage of ./ff:
+Usage of ff:
   -a int
-    	Range around of the word that I found. (default 10)
-  -d	Show Debug Mode
+        Range around of the word (default 10)
+  -d string
+        Text searching (default "./")
   -f string
-    	Filter by name of file or the file name
+        Filter by file name
   -no-color
-    	Disable color output
-  -p string
-    	The directory path (default "./")
-  -r	Search by regex
+        Disable color output
+  -r    Search by this Regex
   -t string
-    	what I am searching
+        Text searching
+  -u    Use case sensitive (default true)
+  -version
+        Show the version
 ```
 
 -----------------------
@@ -162,6 +164,19 @@ The `-d` parameter will active the debug mode, you can see the time of searching
 ### Parameter -v
 
 Show the version of application
+    
+    $ ff -version                                                                                                                                                master  ✭
+    ----------------------------------------------------------------------------------------------------
+            This program has written by Rodrigo Lopes <dev.rodrigo.lopes@gmail.com>.
+            Only for academic purposes
+    ----------------------------------------------------------------------------------------------------
+      Version : 1.1.0
+      Language: GO Language
+      License : ISC
+      Project : https://github.com/rodkranz/ff
+      Contact : dev.rodrigo.lopes@gmail.com
+    ----------------------------------------------------------------------------------------------------
+
 
 -----------------------
 
