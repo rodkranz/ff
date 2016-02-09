@@ -1,14 +1,16 @@
-package search
+package storage
+
+import "github.com/rodkranz/ff/src/file"
 
 type Storage struct {
-	Files		[]File
+	Files		[]file.File
 }
 
 func NewStorage() *Storage {
 	return &Storage{}
 }
 
-func (s *Storage) Add(newFile File) {
+func (s *Storage) Add(newFile file.File) {
 	s.Files = append(s.Files, newFile)
 }
 

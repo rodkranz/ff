@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"github.com/rodkranz/ff/src/search"
 	"regexp"
+	"github.com/rodkranz/ff/src/output"
+	"github.com/rodkranz/ff/src/storage"
+	"github.com/fatih/color"
 )
 
 var (
 	searching     search.Search
-	showWithColor bool
 	showVersion   bool
 )
 
@@ -20,7 +22,7 @@ func init() {
 	flag.IntVar(&searching.Reach, "a", 10, "Range around of the word")
 	flag.BoolVar(&searching.WithRegex, "r", false, "Search by this Regex")
 	flag.BoolVar(&searching.CaseSensitive, "u", true, "Use case sensitive")
-	flag.BoolVar(&showWithColor, "no-color", false, "Disable color output")
+	flag.BoolVar(&color.NoColor, "no-color", false, "Disable color output")
 	flag.BoolVar(&showVersion, "version", false, "Show the version")
 
 	if searching.WithRegex {
@@ -32,17 +34,17 @@ func init() {
 
 func main() {
 	if showVersion {
-		search.ShowVersion()
+		output.ShowVersion()
 	}
 
 	// Find Files filtering by name
-	var storage search.Storage
+	var storage storage.Storage
 
 	searching.SetStorage(&storage)
 	searching.FindFiles()
 	searching.SearchByText()
 
-	search.ShowPretty(&searching)
+	output.ShowPretty(&searching)
 
 	fmt.Printf("\n\n")
 }

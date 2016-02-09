@@ -1,4 +1,4 @@
-package search
+package output
 
 import (
 	"github.com/fatih/color"
@@ -6,17 +6,18 @@ import (
 	"fmt"
 	"strings"
 	"os"
+
+	"github.com/rodkranz/ff/src/search"
 )
 
 var (
 	LineSize        = 100
-	ColorSearchText = color.New(color.FgRed).SprintFunc()
 	ColorNumbers    = color.New(color.FgHiYellow).SprintFunc()
 	ColorFileName   = color.New(color.FgBlue).SprintFunc()
 	ColorTitles     = color.New(color.FgGreen).SprintFunc()
 )
 
-func ShowPretty(search *Search) {
+func ShowPretty(search *search.Search) {
 	storage := search.GetStorage()
 
 	ShowHeader(search)
@@ -34,8 +35,7 @@ func ShowPretty(search *Search) {
 	ShowFooter(search)
 	os.Exit(0)
 }
-
-func ShowHeader(search *Search) {
+func ShowHeader(search *search.Search) {
 	ShowLine()
 	fmt.Printf("%s : %s\n", ColorTitles("Path"), search.Path)
 	fmt.Printf("%s : %s\n", ColorTitles("File"), search.File)
@@ -51,7 +51,7 @@ func ShowHeader(search *Search) {
 	ShowLine()
 }
 
-func ShowFooter(search *Search) {
+func ShowFooter(search *search.Search) {
 	if len(search.Text) == 0 {
 		ShowLine()
 	}

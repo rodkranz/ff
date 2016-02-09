@@ -7,6 +7,9 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"github.com/rodkranz/ff/src/storage"
+	"github.com/rodkranz/ff/src/file"
+	"github.com/fatih/color"
 )
 
 type Search struct {
@@ -19,13 +22,17 @@ type Search struct {
 	CaseSensitive bool
 }
 
-var localStorage *Storage
+var (
+	localStorage *storage.Storage
+	ColorSearchText = color.New(color.FgRed).SprintFunc()
+)
 
-func (s *Search) SetStorage(storage *Storage) {
+
+func (s *Search) SetStorage(storage *storage.Storage) {
 	localStorage = storage
 }
 
-func (s *Search) GetStorage() *Storage {
+func (s *Search) GetStorage() *storage.Storage {
 	return localStorage
 }
 
@@ -44,15 +51,15 @@ func (s *Search) IsValidName(path string) bool {
 	return strings.Contains(path, searchMe)
 }
 
-func (s *Search) visitor(path string, file os.FileInfo, _ error) error {
+func (s *Search) visitor(path string, f os.FileInfo, _ error) error {
 	if s.IsValidName(path) {
-		localStorage.Add(*NewFile(path, file))
+		localStorage.Add(*file.NewFile(path, f))
 	}
 
 	return nil
 }
 
-func (s *Search) FindRegex(f *File, line string) {
+func (s *Search) FindRegex(f *file.File, line string) {
 	words := s.Regex.FindAllString(line, -1)
 	if len(words) > 0 {
 		for _, v := range words {
@@ -61,13 +68,13 @@ func (s *Search) FindRegex(f *File, line string) {
 	}
 }
 
-func (s *Search) FindText(f *File, line string) {
+func (s *Search) FindText(f *file.File, line string) {
 	if strings.Contains(line, s.Text) {
 		f.WriteComment(s.Range(line, s.Text))
 	}
 }
 
-func (s *Search) HasText(f *File) bool {
+func (s *Search) HasText(f *file.File) bool {
 	file, err := os.Open(f.Path)
 	if err != nil {
 		f.Comment[-1] = err.Error()
@@ -130,4 +137,5 @@ func (s *Search) Range(line, text string) string {
 	endWord := line[index+len(text) : ie]
 
 	return fmt.Sprintf("%s%s%s", fontWord, ColorSearchText(word), endWord)
+	return fmt.Sprintf("%s%s%s", fontWord, word, endWord)
 }
