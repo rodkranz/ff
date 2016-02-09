@@ -25,6 +25,10 @@ func (s *Search) SetStorage(storage *Storage) {
 	localStorage = storage
 }
 
+func (s *Search) GetStorage() *Storage {
+	return localStorage
+}
+
 func (s *Search) FindFiles() {
 	filepath.Walk(s.Path, s.visitor)
 }
@@ -117,5 +121,5 @@ func (s *Search)  Range(line, text string) string {
 	fontWord := line[ii:index]
 	endWord  := line[index+len(text):ie]
 
-	return fmt.Sprintf("%s%s%s", fontWord, word, endWord)
+	return fmt.Sprintf("%s%s%s", fontWord, ColorSearchText(word), endWord)
 }

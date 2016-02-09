@@ -39,12 +39,7 @@ func main() {
 	searching.FindFiles();
 	searching.SearchByText();
 
-	for _, file := range storage.Files {
-		fmt.Printf("\nFile: %s \n", file.File.Name())
-		for line, comment := range file.Comment {
-			fmt.Printf("[%d] \t %s \n", line, comment)
-		}
-	}
+	search.ShowPretty(&searching)
 
 	fmt.Printf("\n\n")
 }
