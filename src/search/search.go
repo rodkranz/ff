@@ -1,22 +1,22 @@
 package search
 
 import (
+	"bufio"
+	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
-	"bufio"
 	"regexp"
-	"fmt"
+	"strings"
 )
 
 type Search struct {
-	Text 			string
-	File 			string
-	Path 			string
-	Reach 			int
-	WithRegex		bool
-	Regex			*regexp.Regexp
-	CaseSensitive 	bool
+	Text          string
+	File          string
+	Path          string
+	Reach         int
+	WithRegex     bool
+	Regex         *regexp.Regexp
+	CaseSensitive bool
 }
 
 var localStorage *Storage
@@ -38,7 +38,7 @@ func (s *Search) IsValidName(path string) bool {
 
 	if !s.CaseSensitive {
 		searchMe = strings.ToLower(searchMe)
-		path 	 = strings.ToLower(path)
+		path = strings.ToLower(path)
 	}
 
 	return strings.Contains(path, searchMe)
@@ -51,7 +51,6 @@ func (s *Search) visitor(path string, file os.FileInfo, _ error) error {
 
 	return nil
 }
-
 
 func (s *Search) FindRegex(f *File, line string) {
 	words := s.Regex.FindAllString(line, -1)
@@ -69,16 +68,16 @@ func (s *Search) FindText(f *File, line string) {
 }
 
 func (s *Search) HasText(f *File) bool {
-	file, err := os.Open(f.Path);
+	file, err := os.Open(f.Path)
 	if err != nil {
 		f.Comment[-1] = err.Error()
 		return true
 	}
 	defer file.Close()
 
-	scanner  := bufio.NewScanner(file)
+	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		f.NLine++
+		f.LineNum++
 		line := scanner.Text()
 
 		if s.WithRegex {
@@ -93,33 +92,42 @@ func (s *Search) HasText(f *File) bool {
 	return len(f.Comment) > 0
 }
 
-func (s *Search) SearchByText() {
-	if len(s.Text) == 0 {
-		return;
+func (s *Search) DeferHasText(i int) {
+	if !s.HasText(&localStorage.Files[i]) {
+		localStorage.Remove(i)
 	}
 
-	for i := len(localStorage.Files) -1; i >= 0; i-- {
-		file := localStorage.Files[i]
-		if !s.HasText(&file) {
-			localStorage.Remove(i)
-		}
+}
+
+func (s *Search) SearchByText() {
+	if len(s.Text) == 0 {
+		return
+	}
+
+	//for i := len(localStorage.Files) -1; i >= 0; i-- {
+	for i := 0; i < len(localStorage.Files); i++ {
+		defer s.DeferHasText(i)
 	}
 }
 
-func (s *Search)  Range(line, text string) string {
+func (s *Search) Range(line, text string) string {
 	var ii, ie int
 	index := strings.Index(line, text)
 
-	word := line[index:index+len(text)]
+	word := line[index : index+len(text)]
 
 	ii = index - s.Reach
 	ie = len(text) + index + s.Reach
 
-	if ii < 0 { ii = 0 }
-	if ie > len(line) { ie = len(line) }
+	if ii < 0 {
+		ii = 0
+	}
+	if ie > len(line) {
+		ie = len(line)
+	}
 
 	fontWord := line[ii:index]
-	endWord  := line[index+len(text):ie]
+	endWord := line[index+len(text) : ie]
 
 	return fmt.Sprintf("%s%s%s", fontWord, ColorSearchText(word), endWord)
 }

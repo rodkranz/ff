@@ -1,0 +1,53 @@
+form name="formSchoolAddress" method="POST" data-ng-submit="vm.doSave(vm.schoolAddress)"
+	.panel.panel-default
+	    .panel-heading
+	        | Contact
+	    .panel-body
+
+	    	.col-md-6
+				.form-group
+	    			label for="phone"
+						| phone
+					input#phone.form-control data-ng-model="vm.schoolAddress.phone" placeholder=""
+
+	    	.col-md-6
+				.form-group
+	    			label for="website"
+						| website
+					input#website.form-control type="url" data-ng-model="vm.schoolAddress.website" placeholder=""
+
+	    	.col-md-6
+				.form-group
+	    			label for="email"
+						| email
+					input#email.form-control type="email" data-ng-model="vm.schoolAddress.email" placeholder=""
+
+	    	.col-md-6
+				.form-group
+	    			label for="skype"
+						| skype
+					input#skype.form-control data-ng-model="vm.schoolAddress.skype" placeholder=""
+
+	    	.col-md-6
+				.form-group
+	    			label for="twitter"
+						| twitter
+					input#twitter.form-control type="url" data-ng-model="vm.schoolAddress.twitter" placeholder=""
+
+	    	.col-md-6
+				.form-group
+	    			label for="facebook"
+						| facebook
+					input#facebook.form-control type="url" data-ng-model="vm.schoolAddress.facebook" placeholder=""
+
+	    	.col-md-6
+				.form-group
+	    			label for="google_plus"
+						| google_plus
+					input#google_plus.form-control type="url" data-ng-model="vm.schoolAddress.google_plus" placeholder=""
+
+	    	.col-md-6
+				.form-group
+	    			label for="instagram"
+						| instagram
+					input#instagram.form-control type="url" data-ng-model="vm.schoolAddress.instagram" placeholder=""

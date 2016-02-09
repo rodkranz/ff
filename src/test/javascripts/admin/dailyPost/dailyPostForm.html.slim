@@ -1,0 +1,81 @@
+.page-header
+    h1
+        | {{ 'title.daily_post_list' | translate }}
+
+
+form method="post" role="form" ng-submit="vm.doSave(vm.dailyPost);" name="vm.formDailyPost" novalidate=""
+    .col-md-6
+        / Start Title
+        .form-group ng-class="{'has-error': (vm.errorsForm && vm.formDailyPost.title.$invalid)}"
+            label for="title"
+                | {{ 'label.title' | translate }}
+            input#title.form-control name="title" type="text" ng-model="vm.dailyPost.title" placeholder="{{ 'placeholder.title' | translate }}" tabindex="1" required="required"
+
+            .help-block ng-show="vm.errorsForm && vm.formDailyPost.title.$invalid"
+                p ng-if="vm.formDailyPost.title.$error.required">
+                    | {{ 'validate.required' | translate }}
+        / End Title
+
+        / Start Website
+        .form-group ng-class="{'has-error': (vm.errorsForm && vm.formDailyPost.website.$invalid)}"
+            label for="website"
+                | {{ 'label.website' | translate }}
+            input#website.form-control name="website" type="url" ng-model="vm.dailyPost.website" placeholder="{{ 'placeholder.website' | translate }}" tabindex="2" required="required"
+
+            .help-block ng-show="vm.errorsForm && vm.formDailyPost.website.$invalid"
+                p ng-if="vm.formDailyPost.website.$error.required"
+                    | {{ 'validate.required' | translate }}
+                p ng-if="vm.formDailyPost.website.$error.url"
+                    | {{ 'validate.url' | translate }}
+
+        / End Website
+
+        / Start image
+        .form-group ng-class="{'has-error': (vm.errorsForm && vm.formDailyPost.image.$invalid)}"
+            label for="image"
+                | {{ 'label.image' | translate }}
+            input#image.form-control name="image" type="text" ng-model="vm.dailyPost.image" placeholder="{{ 'placeholder.image' | translate }}" tabindex="3" required="required"
+
+            .help-block ng-show="vm.errorsForm && vm.formDailyPost.image.$invalid"
+                p ng-if="vm.formDailyPost.image.$error.required"
+                    | {{ 'validate.required' | translate }}
+        / End image
+
+        / Start logo
+        .form-group ng-class="{'has-error': (vm.formDailyPost.logo.$invalid && vm.errorsForm)}"
+            label for="logo"
+                | {{ 'label.logo' | translate }}
+            input#logo.form-control name="logo" type="text" ng-model="vm.dailyPost.logo" placeholder="{{ 'placeholder.logo' | translate }}" tabindex="4" required="required"
+
+            .help-block ng-show="vm.errorsForm && vm.formDailyPost.logo.$invalid"
+                p ng-if="vm.formDailyPost.logo.$error.required"
+                    | {{ 'validate.required' | translate }}
+        / End logo
+
+        / Start status
+        .form-group ng-class="{'has-error': (vm.formDailyPost.status.$invalid && vm.errorsForm)}"
+            label for="status"
+                | {{ 'label.status' | translate }}
+            select#status.form-control placeholder="{{ 'placeholder.status' | translate }}" ng-model="vm.dailyPost.status" name="status" tabindex="5" required="required"
+                option value=""         {{ 'label.select_status'   | translate }}
+                option value="accepted" {{ 'label.select_accepted' | translate }}
+                option value="pending"  {{ 'label.select_pending'  | translate }}
+                option value="reject"   {{ 'label.select_reject'   | translate }}
+
+            .help-block ng-show="vm.errorsForm && vm.formDailyPost.status.$invalid"
+                p ng-if="vm.formDailyPost.status.$error.required"
+                | {{ 'validate.required' | translate }}
+        / End status
+
+    .col-md-12
+        / Start Buttons
+        .text-right
+            a.btn.btn-primary ui-sref="grid.dailyPostList" tabindex="6"
+                i.fa.fa-backward
+                | &nbsp;{{ 'button.back' | translate }}
+
+            | &nbsp;
+            button.btn.btn-success type="submit" tabindex="5"
+                i.fa.fa-plus-circle
+                | &nbsp;{{ 'button.save' | translate }}
+        / End Buttons

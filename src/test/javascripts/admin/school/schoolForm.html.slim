@@ -1,0 +1,139 @@
+.panel.panel-default
+    .panel-heading
+        | {{ 'title.school_list' | translate }}
+    .panel-body
+        form method="post" role="form" ng-submit="vm.doSave(vm.school);" name="vm.formSchool" novalidate=""
+            .col-md-6
+                / Start Name
+                .form-group ng-class="{'has-error': (vm.errorsForm && vm.formSchool.name.$invalid)}"
+                    label for="name"
+                        | {{ 'label.name' | translate }}
+                    input#name.form-control name="name" type="text" ng-model="vm.school.name" placeholder="{{ 'placeholder.name' | translate }}" tabindex="1" required="required"
+
+                    .help-block ng-show="vm.errorsForm && vm.formSchool.name.$invalid"
+                        p ng-if="vm.formSchool.name.$error.required">
+                            | {{ 'validate.required' | translate }}
+                / End Name
+
+                / Start Logo
+                .form-group ng-class="{'has-error': (vm.errorsForm && vm.formSchool.logo.$invalid)}"
+                    label for="logo"
+                        | {{ 'label.logo' | translate }}
+                    input#logo.form-control name="logo" type="file" ng-model="vm.school.logo" placeholder="{{ 'placeholder.logo' | translate }}" tabindex="2" required="required"
+
+                    .help-block ng-show="vm.errorsForm && vm.formSchool.logo.$invalid"
+                        p ng-if="vm.formSchool.logo.$error.required">
+                            | {{ 'validate.required' | translate }}
+                / End Logo
+
+                / Start Date_init
+                .form-group ng-class="{'has-error': (vm.errorsForm && vm.formSchool.date_init.$invalid)}"
+                    label for="date_init"
+                        | {{ 'label.date_init' | translate }}
+                    input#date_init.form-control name="date_init" type="date" ng-model="vm.school.date_init" placeholder="{{ 'placeholder.date_init' | translate }}" tabindex="3" required="required"
+
+                    .help-block ng-show="vm.errorsForm && vm.formSchool.date_init.$invalid"
+                        p ng-if="vm.formSchool.date_init.$error.required">
+                            | {{ 'validate.required' | translate }}
+                / End Date_init
+
+                / Start Extra_works
+                .form-group ng-class="{'has-error': (vm.formSchool.extra_works.$invalid && vm.errorsForm)}"
+                    label for="extra_works"
+                        | {{ 'label.extra_works' | translate }}
+                    select#extra_works.form-control placeholder="{{ 'placeholder.extra_works' | translate }}" ng-model="vm.school.extra_works" name="extra_works" tabindex="4" required="required"
+                        option value="yes"  {{ 'label.select_yes'  | translate }}
+                        option value="no"   {{ 'label.select_no' | translate }}
+
+                    .help-block ng-show="vm.errorsForm && vm.formSchool.extra_works.$invalid"
+                        p ng-if="vm.formSchool.extra_works.$error.required"
+                        | {{ 'validate.required' | translate }}
+                / Start Extra_works
+
+                / Start Number_of_class
+                .form-group ng-class="{'has-error': (vm.errorsForm && vm.formSchool.number_of_class.$invalid)}"
+                    label for="number_of_class"
+                        | {{ 'label.number_of_class' | translate }}
+                    input#number_of_class.form-control name="number_of_class" type="number" ng-model="vm.school.number_of_class" placeholder="{{ 'placeholder.number_of_class' | translate }}" tabindex="5" required="required"
+
+                    .help-block ng-show="vm.errorsForm && vm.formSchool.number_of_class.$invalid"
+                        p ng-if="vm.formSchool.number_of_class.$error.required">
+                            | {{ 'validate.required' | translate }}
+                / End number_of_class
+
+            .col-md-6
+                / Start Number_of_view
+                .form-group ng-class="{'has-error': (vm.errorsForm && vm.formSchool.number_of_view.$invalid)}"
+                    label for="number_of_view"
+                        | {{ 'label.number_of_view' | translate }}
+                    input#number_of_view.form-control name="number_of_view" type="number" ng-model="vm.school.number_of_view" placeholder="{{ 'placeholder.number_of_view' | translate }}" tabindex="6" required="required"
+
+                    .help-block ng-show="vm.errorsForm && vm.formSchool.number_of_view.$invalid"
+                        p ng-if="vm.formSchool.number_of_view.$error.required">
+                            | {{ 'validate.required' | translate }}
+                / End Number_of_view
+
+                / Start Number_of_teacher_total
+                .form-group ng-class="{'has-error': (vm.errorsForm && vm.formSchool.number_of_teacher_total.$invalid)}"
+                    label for="number_of_teacher_total"
+                        | {{ 'label.number_of_teacher_total' | translate }}
+                    input#number_of_teacher_total.form-control name="number_of_teacher_total" type="number" ng-model="vm.school.number_of_teacher_total" placeholder="{{ 'placeholder.number_of_teacher_total' | translate }}" tabindex="7" required="required"
+
+                    .help-block ng-show="vm.errorsForm && vm.formSchool.number_of_teacher_total.$invalid"
+                        p ng-if="vm.formSchool.number_of_teacher_total.$error.required">
+                            | {{ 'validate.required' | translate }}
+                / End Number_of_teacher_total
+
+                / Start Number_of_teacher_native
+                .form-group ng-class="{'has-error': (vm.errorsForm && vm.formSchool.number_of_teacher_native.$invalid)}"
+                    label for="number_of_teacher_native"
+                        | {{ 'label.number_of_teacher_native' | translate }}
+                    input#number_of_teacher_native.form-control name="number_of_teacher_native" type="number" ng-model="vm.school.number_of_teacher_native" placeholder="{{ 'placeholder.number_of_teacher_native' | translate }}" tabindex="8" required="required"
+
+                    .help-block ng-show="vm.errorsForm && vm.formSchool.number_of_teacher_native.$invalid"
+                        p ng-if="vm.formSchool.number_of_teacher_native.$error.required">
+                            | {{ 'validate.required' | translate }}
+                / End Number_of_teacher_native
+
+                / Start status
+                .form-group ng-class="{'has-error': (vm.formSchool.status.$invalid && vm.errorsForm)}"
+                    label for="status"
+                        | {{ 'label.status' | translate }}
+                    select#status.form-control placeholder="{{ 'placeholder.status' | translate }}" ng-model="vm.school.status" name="status" tabindex="9" required="required"
+                        option value=""         {{ 'label.select_status'   | translate }}
+                        option value="accepted" {{ 'label.select_accepted' | translate }}
+                        option value="pending"  {{ 'label.select_pending'  | translate }}
+                        option value="reject"   {{ 'label.select_reject'   | translate }}
+
+                    .help-block ng-show="vm.errorsForm && vm.formSchool.status.$invalid"
+                        p ng-if="vm.formSchool.status.$error.required"
+                        | {{ 'validate.required' | translate }}
+                / End status
+
+    .panel-footer
+        / Start Buttons
+        .text-right
+            a.btn.btn-primary ui-sref="grid.schoolList" tabindex="11"
+                i.fa.fa-backward
+                | &nbsp;{{ 'button.back' | translate }}
+
+            | &nbsp;
+            button.btn.btn-success type="submit" tabindex="10"
+                i.fa.fa-plus-circle
+                | &nbsp;{{ 'button.save' | translate }}
+        / End Buttons
+
+/ Address
+div ng-controller="SchoolAddressForm as vm" ng-include="'admin/school/address/addressForm.html'"
+
+/ Contact
+div ng-controller="SchoolContactForm as vm" ng-include="'admin/school/contact/contactForm.html'"
+
+/ Gallery
+div ng-controller="SchoolGalleryList as vm" ng-include="'admin/school/gallery/galleryList.html'"
+
+/ Nationalities
+div ng-controller="SchoolNationalityList as vm" ng-include="'admin/school/nationality/nationalityList.html'"
+
+/ Certificates
+div ng-controller="SchoolNationalityList as vm" ng-include="'admin/school/certificate/certificateList.html'"

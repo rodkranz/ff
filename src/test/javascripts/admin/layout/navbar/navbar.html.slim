@@ -1,0 +1,46 @@
+nav.navbar.navbar-default.navbar-fixed-top.topnav ng-controller=("Navbar as vm") role="navigation" 
+    .col-md-12
+        /! Brand and toggle get grouped for better mobile display
+        .navbar-header
+            button.navbar-toggle.collapsed aria-expanded="false" data-target="#ezWay" data-toggle="collapse" type="button"
+                span.sr-only Toggle navigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a.navbar-brand ui-sref="grid.dashboard" {{ config.appName }}
+
+        #ezWay.collapse.navbar-collapse
+            ul.nav.navbar-nav
+                li.active
+                    a
+                        | Link
+                        span.sr-only (current)
+                li
+                    a
+                        | Link
+
+            ul.nav.navbar-nav.navbar-right
+
+                li ng-if="!isLogged"
+
+                    a ui-sref="empty.login"
+                        i.fa.fa-sign-in
+                        |  {{ 'menu.sign_in' | translate }}
+
+                li.dropdown ng-if="isLogged"
+
+                    a.dropdown-toggle aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" role="button"
+                        i.fa.fa-user
+                        |  {{ 'menu.user' | translate }}
+                        span.caret
+
+                    ul.dropdown-menu
+                        li
+                            a
+                                i.fa.fa-user
+                                |  {{ 'menu.profile' | translate }}
+                        li.divider role="separator"
+                        li
+                            a ng-click="vm.signOut()"
+                                i.fa.fa-sign-out
+                                |  {{ 'menu.sign_out' | translate }}

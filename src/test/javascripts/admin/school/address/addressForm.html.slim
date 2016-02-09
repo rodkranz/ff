@@ -1,0 +1,44 @@
+form name="formSchoolAddress" method="POST" data-ng-submit="vm.doSave(vm.schoolAddress)"
+	.panel.panel-default
+	    .panel-heading
+	        | Address
+	    .panel-body
+	    	.col-md-6
+				.form-group
+	    			label for="city"
+	    				| city
+					input#city.form-control data-ng-model="vm.schoolAddress.city" placeholder=""
+
+	    	.col-md-6
+		    	.form-group
+		    		label for="central"
+		    			| is_central
+		    		select.form-control#central data-ng-model="vm.schoolAddress.is_central"
+		    			option value="yes"
+		    				| Yes
+	    				option value="no"
+		    				| No
+
+			.col-md-8
+		    	.form-group
+	    			label for="street"
+	    				| street
+					input#street.form-control placeholder="" data-ng-model="vm.schoolAddress.street"
+					
+			.col-md-4
+				.form-group
+	    			label for="number"
+	    				| number
+					input#number.form-control placeholder="" data-ng-model="vm.schoolAddress.number"
+
+			.col-md-6
+		    	.form-group
+	    			label for="latitude"
+	    				| latitude
+					input#latitude.form-control placeholder="" data-ng-model="vm.schoolAddress.latitude"
+			
+			.col-md-6
+				.form-group
+	    			label for="longitude"
+	    				| longitude
+					input#longitude.form-control placeholder="" data-ng-model="vm.schoolAddress.longitude" 

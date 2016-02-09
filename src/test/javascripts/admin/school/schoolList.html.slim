@@ -1,0 +1,45 @@
+.page-header
+    .pull-right
+        button.btn.btn-xs.btn-success ui-sref="grid.schoolNew"
+            | {{ 'button.school_new' | translate }}
+    h1
+        | {{ 'title.school_list' | translate }}
+
+div loading-container="vm.tableParams.settings().$loading"
+    table.table.table-hover.table-bordered.table-striped ng-table="vm.tableParams" show-filter="false"
+        tr ng-repeat="school in $data"
+            td.text-center title="'#'" sortable="'id'"
+                | {{ school.id }}
+
+            td title="'table.name' | translate" sortable="'name'"
+                | {{ school.name }}
+
+            td title="'table.date_init' | translate" sortable="'date_init'"
+                | {{ school.date_init | amDateFormat: config.dateFormat  }}
+
+            td title="'table.extra_works' | translate" sortable="'extra_works'"
+                | {{ school.extra_works }}
+
+            td title="'table.number_of_class' | translate" sortable="'number_of_class'"
+                | {{ school.number_of_class }}
+
+            td title="'table.number_of_view' | translate" sortable="'number_of_view'"
+                | {{ school.number_of_view }}
+
+            td title="'table.number_of_teacher_total' | translate" sortable="'number_of_teacher_total'"
+                | {{ school.number_of_teacher_total }}
+
+            td title="'table.number_of_teacher_native' | translate" sortable="'number_of_teacher_native'"
+                | {{ school.number_of_teacher_native }}
+
+            td title="'table.updated_at' | translate" sortable="'updated_at'"
+                | {{ school.updated_at | amDateFormat: config.dateFormat }}
+
+            td.text-center title="'table.actions' | translate"
+                button.btn.btn-xs.btn-danger ui-sref="grid.schoolEdit({id: school.id })"
+                    i.fa.fa-pencil-square-o
+                    | {{ 'button.edit' | translate }}
+                | &nbsp;
+                button.btn.btn-xs.btn-primary ng-click="vm.removeSchool(school)"
+                    i.fa.fa-trash
+                    | {{ 'button.delete' | translate }}

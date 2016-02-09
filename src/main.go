@@ -1,27 +1,27 @@
 package main
 
 import (
-	"bitbucket.org/rkranz/gofind/src/search"
 	"flag"
 	"fmt"
+	"github.com/rodkranz/ff/src/search"
 	"regexp"
 )
 
 var (
-	searching 		search.Search
-	showWithColor 	bool
-	showVersion 	bool
+	searching     search.Search
+	showWithColor bool
+	showVersion   bool
 )
 
 func init() {
-	flag.StringVar(&searching.Text,  		"t", 		  "", 			"Text searching")
-	flag.StringVar(&searching.File,  		"f", 		  "", 			"Filter by file name")
-	flag.StringVar(&searching.Path,  		"d",		  "./",			"Text searching")
-	flag.IntVar(&searching.Reach, 			"a", 		  10,			"Range around of the word")
-	flag.BoolVar(&searching.WithRegex, 		"r", 		  false, 		"Search by this Regex")
-	flag.BoolVar(&searching.CaseSensitive, 	"u", 		  true,			"Use case sensitive")
-	flag.BoolVar(&showWithColor, 			"no-color",   false,		"Disable color output")
-	flag.BoolVar(&showVersion, 				"version",    false,		"Show the version")
+	flag.StringVar(&searching.Text, "t", "", "Text searching")
+	flag.StringVar(&searching.File, "f", "", "Filter by file name")
+	flag.StringVar(&searching.Path, "d", "./", "Text searching")
+	flag.IntVar(&searching.Reach, "a", 10, "Range around of the word")
+	flag.BoolVar(&searching.WithRegex, "r", false, "Search by this Regex")
+	flag.BoolVar(&searching.CaseSensitive, "u", true, "Use case sensitive")
+	flag.BoolVar(&showWithColor, "no-color", false, "Disable color output")
+	flag.BoolVar(&showVersion, "version", false, "Show the version")
 
 	if searching.WithRegex {
 		searching.Regex = regexp.MustCompile(searching.Text)
@@ -30,14 +30,17 @@ func init() {
 	flag.Parse()
 }
 
-
 func main() {
+	if showVersion {
+		search.ShowVersion()
+	}
+
 	// Find Files filtering by name
 	var storage search.Storage
 
 	searching.SetStorage(&storage)
-	searching.FindFiles();
-	searching.SearchByText();
+	searching.FindFiles()
+	searching.SearchByText()
 
 	search.ShowPretty(&searching)
 
