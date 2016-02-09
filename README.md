@@ -206,7 +206,7 @@ The `ff` running looking for word `rlopes`
 		[6] = 'http://rlopes.realestat
 		[15] = 'http://rlopes.realestat
 	----------------------------------------------------------------------------------------------------
-	ff -t rlopes  0,02s user 0,00s system 75% cpu 0,032 total
+	ff -t rlopes 0.00s user 0.01s system 71% cpu 0.018 total
 
 
 -----------------------
@@ -220,7 +220,8 @@ The `ack` running looking for word `rlopes`
 	3:domain = ".rlopes.realestateid.fixe"
 	6:baseUri        = 'http://rlopes.realestateid.fixe'
 	15:baseUri        = 'http://rlopes.realestateid.fixe'
-	ack .rlopes  0,06s user 0,02s system 93% cpu 0,077 total
+	ack rlopes  0.11s user 0.01s system 96% cpu 0.128 total
+
 
 
 -----------------------
