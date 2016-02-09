@@ -1,0 +1,113 @@
+#!/bin/bash
+
+# Paths of files
+goPath=$(which go)
+
+projectPath=$(pwd)/src
+releasePath=$(pwd)/release
+
+# Main file
+mainFile="main.go"
+
+# Compiled file name
+finalFile="ff"
+
+# Check if go is installed correctly
+if [ -z ${goPath} ] || [[ ! "$(go version)" =~ (^(go version)+.*) ]]
+then
+    echo "Go not found!";
+    exit 1
+fi
+
+# Check if main file exists
+if [ ! -e "${projectPath}/${mainFile}" ]
+then
+    echo "File Main [${mainFile}] not found"
+    exit 1
+fi
+
+# get the packages
+goGET="$($goPath get 2>&1 )"
+
+
+function CreateFolder() {
+    if [ ! -d "${releasePath}/$1" ]; then
+        echo -n "Creating folder: '$1'"
+        mkdir -p ${releasePath}/$1
+        echo -e "\rRemoved "
+    fi
+}
+
+function RemoveOldFile() {
+    if [ -f "${releasePath}/$1/$2" ]; then
+        echo -n "Removing old file: '$1/$2'"
+        rm ${releasePath}/$1/$2
+        echo -e "\rRemoved "
+    fi
+}
+
+function compileLinux {
+    echo -n "Compiling file: '${finalFile}'"
+    env GOOS=linux GOARCH=arm GOARM=7 ${goPath} build -o "${releasePath}/linux/${finalFile}" "${projectPath}/${mainFile}"
+    echo -e "\rCompiled  "
+}
+
+function compileMac {
+    echo -n "Compiling file: '${finalFile}'"
+    env GOOS=darwin GOARCH=386 ${goPath} build -o "${releasePath}/macosx/${finalFile}" "${projectPath}/${mainFile}"
+    echo -e "\rCompiled  "
+}
+
+function compileWin {
+    echo -n "Compiling file: '${finalFile}.exe'"
+    env GOOS=windows GOARCH=386 ${goPath} build -o "${releasePath}/windows/${finalFile}.exe" "${projectPath}/${mainFile}"
+    echo -e "\rCompiled  "
+}
+
+
+function buildLinux {
+    CreateFolder  "linux"
+    RemoveOldFile "linux" "${finalFile}"
+    compileLinux
+}
+function buildMacosx {
+    CreateFolder  "macosx"
+    RemoveOldFile "macosx" "${finalFile}"
+    compileMac
+}
+function buildWindows {
+    CreateFolder  "windows"
+    RemoveOldFile "windows" "${finalFile}.exe"
+    compileWin
+}
+
+PS3='Please enter your system: '
+options=("Linux" "MacOSx" "Windows" "All Plataforms" "Quit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Linux")
+            buildLinux
+            break
+        ;;
+        "MacOSx")
+            buildMacosx
+            break
+        ;;
+        "Windows")
+            buildWindows
+            break
+        ;;
+        "All Plataforms")
+            buildLinux
+            buildMacosx
+            buildWindows
+            break
+        ;;
+        "Quit")
+            break
+            ;;
+        *) echo invalid option;;
+    esac
+done
+
