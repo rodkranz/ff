@@ -14,7 +14,7 @@ Find File or text in file with go language.
 
 ## How to Compile it
 
- compile files from different platforms
+ Compile those files from different platforms
 
 ### requirements
 
