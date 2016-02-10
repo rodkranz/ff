@@ -6,7 +6,7 @@ Find File or text in file with go language.
 ### Source Find File ###
 
 * Find text or file name 
-* Version: 0.0.1
+* Version: 1.1.0
 * License: ISC
 
 -----------------------
