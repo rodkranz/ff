@@ -18,19 +18,19 @@ Find File or text in file with go language.
 
 ### requirements
 
-* Go
+* [GO Language](https://golang.org/doc/install)
 
-#### compiling to *Linux*
+#### Compiling to *Linux*
 
 	$ env GOOS=linux GOARCH=arm GOARM=7 go build -o ff main.go
 
 
-#### compiling to *MAcOSX*
+#### Compiling to *MAcOSX*
 
 	$ env GOOS=darwin GOARCH=386 go build -o ff main.go
 
 
-#### compiling to *Windows*
+#### Compiling to *Windows*
 
 	$ env GOOS=windows GOARCH=386 go build -o ff.exe main.go
 
