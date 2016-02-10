@@ -23,3 +23,7 @@ func (s *Storage) Remove(i int) {
 func (s *Storage) GetById(i int) *file.File {
 	return &s.Files[i]
 }
+
+func (s *Storage) SetRemove(i int) {
+
+}
