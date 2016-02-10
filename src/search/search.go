@@ -10,6 +10,7 @@ import (
 	"github.com/rodkranz/ff/src/storage"
 	"github.com/rodkranz/ff/src/file"
 	"github.com/fatih/color"
+	"sync"
 )
 
 type Search struct {
@@ -45,7 +46,7 @@ func (s *Search) IsValidName(path string) bool {
 
 	if !s.CaseSensitive {
 		searchMe = strings.ToLower(searchMe)
-		path = strings.ToLower(path)
+		path	 = strings.ToLower(path)
 	}
 
 	return strings.Contains(path, searchMe)
@@ -99,11 +100,18 @@ func (s *Search) HasText(f *file.File) bool {
 	return len(f.Comment) > 0
 }
 
-func (s *Search) DeferHasText(i int) {
-	if !s.HasText(&localStorage.Files[i]) {
-		localStorage.Remove(i)
+func (s *Search) FindInGroup() {
+	var ctrl sync.WaitGroup
+
+	for i := 0; i < len(localStorage.Files); i++ {
+		ctrl.Add(1)
+		go func (file *file.File){
+			file.Enabled = s.HasText(file)
+			ctrl.Done()
+		}(localStorage.GetById(i))
 	}
 
+	ctrl.Wait()
 }
 
 func (s *Search) SearchByText() {
@@ -111,10 +119,7 @@ func (s *Search) SearchByText() {
 		return
 	}
 
-	//for i := len(localStorage.Files) -1; i >= 0; i-- {
-	for i := 0; i < len(localStorage.Files); i++ {
-		defer s.DeferHasText(i)
-	}
+	s.FindInGroup()
 }
 
 func (s *Search) Range(line, text string) string {

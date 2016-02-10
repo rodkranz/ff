@@ -6,12 +6,38 @@ Find File or text in file with go language.
 ### Source Find File ###
 
 * Find text or file name 
-* Version: 1.1.0
+* Version: 1.1.1
 * License: ISC
+
 
 -----------------------
 
-## Parameters 
+## How to Compile it
+
+ compile files from different platforms
+
+### requirements
+
+* Go
+
+#### compiling to *Linux*
+
+	$ env GOOS=linux GOARCH=arm GOARM=7 go build -o ff main.go
+
+
+#### compiling to *MAcOSX*
+
+	$ env GOOS=darwin GOARCH=386 go build -o ff main.go
+
+
+#### compiling to *Windows*
+
+	$ env GOOS=windows GOARCH=386 go build -o ff.exe main.go
+
+
+-----------------------
+
+## Parameters
 
 ##### Helper: 
 
@@ -188,7 +214,8 @@ Show the helper and parameters available
 
 ## Time Execution
 	
-The all tests was made in the same computer 
+The all tests was made in the same computer
+the folder has `1434` files
 
 -----------------------
 The `ff` running looking for word `rlopes`
@@ -206,7 +233,7 @@ The `ff` running looking for word `rlopes`
 		[6] = 'http://rlopes.realestat
 		[15] = 'http://rlopes.realestat
 	----------------------------------------------------------------------------------------------------
-	ff -t rlopes 0.00s user 0.01s system 71% cpu 0.018 total
+	ff rlopes  0,55s user 0,04s system 299% cpu 0,199 total
 
 
 -----------------------
@@ -220,43 +247,22 @@ The `ack` running looking for word `rlopes`
 	3:domain = ".rlopes.realestateid.fixe"
 	6:baseUri        = 'http://rlopes.realestateid.fixe'
 	15:baseUri        = 'http://rlopes.realestateid.fixe'
-	ack rlopes  0.11s user 0.01s system 96% cpu 0.128 total
-
+    ack rlopes  0,29s user 0,03s system 99% cpu 0,322 total
 
 
 -----------------------
+
 The `grep` running looking for word `rlopes`
 
-	$ time grep -i -E -r 'rlopes' ./*
-	./resources/css/toastr.css:.rlopes { lorem ipsum }
-	./services.dev.ini:domain = ".rlopes.realestateid.fixe"
-	./services.dev.ini:baseUri        = 'http://rlopes.realestateid.fixe'
-	./services.dev.ini:baseUri        = 'http://rlopes.realestateid.fixe'
-	grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn} -i -E -r 'rlopes' ./  0,30s user 0,00s system 98% cpu 0,308 total
+    $ time grep -i -r 'rlopes' ./*                                                                                                                                                                                            master  ✗ ✭
+    ./jaws/jaws/configuration.dev.ini:site_url    = "http://rlopes.realestateid.fixe"
+    ./jaws/jaws/configuration.dev.ini:base_uri    = "rlopes.realestateid.fixe/pixelandia/"
+    ./jaws/jaws/services.dev.ini:domain = ".rlopes.realestateid.fixe"
+    ./jaws/jaws/services.dev.ini:baseUri        = 'http://rlopes.realestateid.fixe'
+    ./jaws/jaws/services.dev.ini:baseUri        = 'http://rlopes.realestateid.fixe'
+    ./jaws/jaws/modules_customization/crm/config.dev.ini:base_uri = "http://rlopes.realestateid.fixe/images/"
+    ./jaws/jaws/realestate/service/attribute/AttributeService.php: * User: rlopes
+    grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn} -i -r 'rlopes' ./  4,26s user 0,05s system 99% cpu 4,328 total
 
 
 -----------------------
-
-## How to Compile it
-
- compile files from different platforms
-
-### requirements 
-
-* Go 
-
-#### compiling to *Linux*
-
-	$ env GOOS=linux GOARCH=arm GOARM=7 go build -o ff main.go
-
-
-#### compiling to *MAcOSX*
-
-	$ env GOOS=darwin GOARCH=386 go build -o ff main.go
-
-
-#### compiling to *Windows*
-	
-	$ env GOOS=windows GOARCH=386 go build -o ff.exe main.go
-
-

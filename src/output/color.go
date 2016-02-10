@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/rodkranz/ff/src/search"
+	"github.com/rodkranz/ff/src/file"
 )
 
 var (
@@ -22,8 +23,11 @@ func ShowPretty(search *search.Search) {
 
 	ShowHeader(search)
 	for _, file := range storage.Files {
-		ShowFile(file.File.Name())
+		if !file.Enabled {
+			continue
+		}
 
+		ShowFile(file)
 		for _, line := range file.GetCommentSorted() {
 			ShowComments(line, file.Comment[line])
 		}
@@ -57,8 +61,9 @@ func ShowFooter(search *search.Search) {
 	}
 }
 
-func ShowFile(fileName string) {
-	fmt.Printf("[%s] %s\n", ColorTitles("File"), ColorFileName(fileName))
+func ShowFile(file file.File) {
+
+	fmt.Printf("[%s] %s\n", ColorTitles("File"), ColorFileName(file.Path))
 }
 
 func ShowComments(line int, comment string) {

@@ -1,9 +1,11 @@
 package storage
 
-import "github.com/rodkranz/ff/src/file"
+import (
+	"github.com/rodkranz/ff/src/file"
+)
 
 type Storage struct {
-	Files		[]file.File
+	Files     []file.File
 }
 
 func NewStorage() *Storage {
@@ -16,4 +18,8 @@ func (s *Storage) Add(newFile file.File) {
 
 func (s *Storage) Remove(i int) {
 	s.Files = s.Files[:i+copy(s.Files[i:], s.Files[i+1:])]
+}
+
+func (s *Storage) GetById(i int) *file.File {
+	return &s.Files[i]
 }

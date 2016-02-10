@@ -11,10 +11,17 @@ type File struct {
 	Data    []byte
 	Comment map[int]string
 	LineNum int
+	Enabled bool
 }
 
 func NewFile(path string, file os.FileInfo) *File {
-	return &File{Path:path, File:file, Comment: make(map[int]string), LineNum: 0}
+	return &File{
+		Path:	 path,
+		File:	 file,
+		Comment: make(map[int]string),
+		LineNum: 0,
+		Enabled: true,
+	}
 }
 
 func (f *File) WriteComment(line string) {
