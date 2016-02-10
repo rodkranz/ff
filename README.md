@@ -45,19 +45,21 @@ Find File or text in file with go language.
 $ ff -h
 Usage of ff:
   -a int
-        Range around of the word (default 10)
+    	Range around of the word (default 10)
+  -cpu int
+    	Number of CPU (default 4)
   -d string
-        Text searching (default "./")
+    	Text searching (default "./")
   -f string
-        Filter by file name
+    	Filter by file name
   -no-color
-        Disable color output
-  -r    Search by this Regex
+    	Disable color output
+  -r	Search by this Regex
   -t string
-        Text searching
-  -u    Use case sensitive (default true)
+    	Text searching
+  -u	Use case sensitive (default true)
   -version
-        Show the version
+    	Show the version
 ```
 
 -----------------------
