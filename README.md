@@ -16,7 +16,7 @@ Find File or text in file with go language.
 
  Compile those files from different platforms
 
-### requirements
+### Requirements
 
 * [GO Language](https://golang.org/doc/install)
 
