@@ -30,6 +30,13 @@ func init() {
 	}
 
 	flag.Parse()
+
+	// Check if has parameters
+	if flag.NArg() == 1 {
+		if par := flag.Arg(0); par[0] != 45 {
+			searching.Text = flag.Arg(0)
+		}
+	}
 }
 
 func main() {
