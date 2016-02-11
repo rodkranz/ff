@@ -8,16 +8,22 @@ import (
 	"github.com/rodkranz/ff/src/storage"
 	"github.com/fatih/color"
 	"runtime"
+	"github.com/rodkranz/ff/src/update"
+	"fmt"
 )
 
 var (
 	searching     search.Search
 	showVersion   bool
+	checkUpdate   bool
 	CPUNum		  int
+	Version       = "v1.1.2"
+	UrlRepo       = "https://github.com/rodkranz/ff/releases"
 )
 
+
 func init() {
-	flag.IntVar(&CPUNum, "cpu", runtime.NumCPU(), "Number of CPU")
+	flag.IntVar(&CPUNum, "cpu", 1, fmt.Sprintf("Number of CPU you have %d available", runtime.NumCPU()))
 	flag.StringVar(&searching.Text, "t", "", "Text searching")
 	flag.StringVar(&searching.File, "f", "", "Filter by file name")
 	flag.StringVar(&searching.Path, "d", "./", "Text searching")
@@ -26,12 +32,17 @@ func init() {
 	flag.BoolVar(&searching.CaseSensitive, "u", true, "Use case sensitive")
 	flag.BoolVar(&color.NoColor, "no-color", false, "Disable color output")
 	flag.BoolVar(&showVersion, "version", false, "Show the version")
+	flag.BoolVar(&checkUpdate, "update", false, "Check update")
 
 	if searching.WithRegex {
 		searching.Regex = regexp.MustCompile(searching.Text)
 	}
 
 	flag.Parse()
+
+	if CPUNum > runtime.NumCPU() {
+		CPUNum = runtime.NumCPU()
+	}
 
 	// Check if has parameters
 	if flag.NArg() == 1 {
@@ -45,7 +56,12 @@ func main() {
 	runtime.GOMAXPROCS(CPUNum)
 
 	if showVersion {
-		output.ShowVersion()
+		output.ShowVersion(Version)
+	}
+
+	if checkUpdate {
+		newVer, has := update.NewUpdate(UrlRepo, Version)
+		output.ShowUpdate(newVer, has, UrlRepo)
 	}
 
 	// Find Files filtering by name

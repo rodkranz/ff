@@ -42,24 +42,26 @@ Find File or text in file with go language.
 ##### Helper: 
 
 ```
-$ ff -h
-Usage of ff:
-  -a int
-    	Range around of the word (default 10)
-  -cpu int
-    	Number of CPU (default 4)
-  -d string
-    	Text searching (default "./")
-  -f string
-    	Filter by file name
-  -no-color
-    	Disable color output
-  -r	Search by this Regex
-  -t string
-    	Text searching
-  -u	Use case sensitive (default true)
-  -version
-    	Show the version
+    $ ff -h
+    Usage of ff:
+      -a int
+            Range around of the word (default 10)
+      -cpu int
+            Number of CPU you have 4 available (default 1)
+      -d string
+            Text searching (default "./")
+      -f string
+            Filter by file name
+      -no-color
+            Disable color output
+      -r	Search by this Regex
+      -t string
+            Text searching
+      -u	Use case sensitive (default true)
+      -update
+            Check update
+      -version
+            Show the version
 ```
 
 -----------------------
@@ -68,6 +70,7 @@ Usage of ff:
 
 Without parameters will show everything in subfolders.
 
+```
 	$ ff
 	----------------------------------------------------------------------------------------------------
 	Path : ./
@@ -78,7 +81,7 @@ Without parameters will show everything in subfolders.
 	[File] .git/FETCH_HEAD 
 	[File] .git/HEAD 
 	.....
-
+```
 
 -----------------------
 
@@ -86,7 +89,7 @@ Without parameters will show everything in subfolders.
 
 Parameter `-f` of file, this parameter you will define the name of file  that you should like to filter
 
-
+```
 	$ ff -f css
 	----------------------------------------------------------------------------------------------------
 	Path : ./
@@ -97,14 +100,14 @@ Parameter `-f` of file, this parameter you will define the name of file  that yo
 	[File] lookingFor/resources/css/bootstrap3.3.2.min.css 
 	[File] lookingFor/resources/css/font-awesome.css 
 	....
-
+```
 
 -----------------------
 ### Parameter -t
 
 Parameter `-t` of text, this text that you will search inside of file.
 	
-
+```
 	$ ff -t rlopes
 	----------------------------------------------------------------------------------------------------
 	Path : ./
@@ -118,6 +121,25 @@ Parameter `-t` of text, this text that you will search inside of file.
 		[6] = 'http://rlopes.realestat
 		[15] = 'http://rlopes.realestat
 	----------------------------------------------------------------------------------------------------
+```
+
+-----------------------
+
+### Parameter --cpu
+
+Parameter `-cpu`, this parameter you will define the number of cpu the program can use.
+
+Normal use:
+```
+	$ ff -t log
+	ff -t "log"  0.01s user 0.01s system 70% cpu 0.034 total
+```
+
+Four CPU use:
+```
+	$ ff -t log -cpu 4
+    ff -t "log" -cpu 4  0.01s user 0.01s system *159%* cpu 0.024 total
+```
 
 
 -----------------------
@@ -126,7 +148,7 @@ Parameter `-t` of text, this text that you will search inside of file.
 
 With parameter `-r` as regex will defined that your `-t` is a regular expression
 
-
+```
 	$ ff -r -t "(rlopes)|(consectetur)"
 	----------------------------------------------------------------------------------------------------
 	Path : ./
@@ -144,7 +166,7 @@ With parameter `-r` as regex will defined that your `-t` is a regular expression
 		[6] = 'http://rlopes.realestat
 		[15] = 'http://rlopes.realestat
 	----------------------------------------------------------------------------------------------------
-
+```
 
 -----------------------
 
@@ -152,7 +174,7 @@ With parameter `-r` as regex will defined that your `-t` is a regular expression
 
 you can match both of the parameters as `-t` and `-f` to create more complex search
 
-
+```
 	$ ff -t "rlopes" -f ini
 	----------------------------------------------------------------------------------------------------
 	Path : ./
@@ -164,7 +186,7 @@ you can match both of the parameters as `-t` and `-f` to create more complex sea
 		[6] = 'http://rlopes.realestat
 		[15] = 'http://rlopes.realestat
 	----------------------------------------------------------------------------------------------------
-
+```
 
 -----------------------
 
@@ -172,7 +194,7 @@ you can match both of the parameters as `-t` and `-f` to create more complex sea
 
 The `-d` parameter will active the debug mode, you can see the time of searching (more things coming soon)
 
-
+```
 	$ ff -t "rlopes" -f ini -d
 	----------------------------------------------------------------------------------------------------
 	Path : ./
@@ -185,7 +207,7 @@ The `-d` parameter will active the debug mode, you can see the time of searching
 		[15] = 'http://rlopes.realestat
 	----------------------------------------------------------------------------------------------------
 	final Execution took 2.031182ms
-
+```
 
 -----------------------
 
@@ -193,18 +215,19 @@ The `-d` parameter will active the debug mode, you can see the time of searching
 
 Show the version of application
     
+```
     $ ff -version                                                                                                                                                master  ✭
     ----------------------------------------------------------------------------------------------------
             This program has written by Rodrigo Lopes <dev.rodrigo.lopes@gmail.com>.
             Only for academic purposes
     ----------------------------------------------------------------------------------------------------
-      Version : 1.1.0
+      Version : 1.1.2
       Language: GO Language
       License : ISC
       Project : https://github.com/rodkranz/ff
       Contact : dev.rodrigo.lopes@gmail.com
     ----------------------------------------------------------------------------------------------------
-
+```
 
 -----------------------
 
@@ -214,14 +237,22 @@ Show the helper and parameters available
 
 -----------------------
 
+### Parameter -update
+
+Check if exist an update available of sistem.
+
+-----------------------
+
 ## Time Execution
 	
 The all tests was made in the same computer
 the folder has `1434` files
 
 -----------------------
+
 The `ff` running looking for word `rlopes`
 
+```
 	$ time ff -t rlopes
 	----------------------------------------------------------------------------------------------------
 	Path : ./
@@ -235,12 +266,14 @@ The `ff` running looking for word `rlopes`
 		[6] = 'http://rlopes.realestat
 		[15] = 'http://rlopes.realestat
 	----------------------------------------------------------------------------------------------------
-	ff rlopes  0,55s user 0,04s system 299% cpu 0,199 total
-
+	ff rlopes  0,55s user 0,04s system 75% cpu 0,199 total
+```
 
 -----------------------
+
 The `ack` running looking for word `rlopes`
 	
+```
 	$ time ack rlopes
 	resources/css/toastr.css
 	144:.rlopes { lorem ipsum }
@@ -250,12 +283,13 @@ The `ack` running looking for word `rlopes`
 	6:baseUri        = 'http://rlopes.realestateid.fixe'
 	15:baseUri        = 'http://rlopes.realestateid.fixe'
     ack rlopes  0,29s user 0,03s system 99% cpu 0,322 total
-
+```
 
 -----------------------
 
 The `grep` running looking for word `rlopes`
 
+```
     $ time grep -i -r 'rlopes' ./*                                                                                                                                                                                            master  ✗ ✭
     ./jaws/jaws/configuration.dev.ini:site_url    = "http://rlopes.realestateid.fixe"
     ./jaws/jaws/configuration.dev.ini:base_uri    = "rlopes.realestateid.fixe/pixelandia/"
@@ -265,6 +299,6 @@ The `grep` running looking for word `rlopes`
     ./jaws/jaws/modules_customization/crm/config.dev.ini:base_uri = "http://rlopes.realestateid.fixe/images/"
     ./jaws/jaws/realestate/service/attribute/AttributeService.php: * User: rlopes
     grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn} -i -r 'rlopes' ./  4,26s user 0,05s system 99% cpu 4,328 total
-
+```
 
 -----------------------

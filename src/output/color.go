@@ -74,17 +74,30 @@ func ShowLine() {
 	fmt.Printf("%s\n", strings.Repeat("-", LineSize))
 }
 
-func ShowVersion() {
+func ShowVersion(version string) {
 	ShowLine();
 	fmt.Printf("\tThis program has written by %s <%s>.\n", ColorTitles("Rodrigo Lopes"), ColorFileName("dev.rodrigo.lopes@gmail.com"))
     fmt.Printf("\tOnly for academic purposes\n")
 	ShowLine();
 
-	fmt.Printf("  Version : %s\n", ColorNumbers("1.1.0"))
+	fmt.Printf("  Version : %s\n", ColorNumbers(version))
 	fmt.Printf("  Language: %s\n", ColorTitles("GO Language"))
 	fmt.Printf("  License : %s\n", ColorTitles("ISC"))
 	fmt.Printf("  Project : %s\n", ColorFileName("https://github.com/rodkranz/ff"))
 	fmt.Printf("  Contact : %s\n", ColorFileName("dev.rodrigo.lopes@gmail.com"))
 	ShowLine()
+	os.Exit(0)
+}
+
+func ShowUpdate(newVersion string, hasUpdate bool, UrlRepo string) {
+	if hasUpdate {
+		fmt.Printf("Exist a new update available\n")
+		fmt.Printf("New version is %s.\n", ColorNumbers(newVersion))
+		fmt.Printf("Please check the link \"%s\"\n", ColorTitles(UrlRepo))
+	} else {
+		fmt.Printf("You have the latest version\n")
+		fmt.Printf("Current version is %s.\n", ColorNumbers(newVersion))
+	}
+
 	os.Exit(0)
 }
