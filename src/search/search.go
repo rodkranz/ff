@@ -3,14 +3,13 @@ package search
 import (
 	"bufio"
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/rodkranz/ff/src/file"
-	"github.com/rodkranz/ff/src/storage"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
-	"sync"
+	"github.com/rodkranz/ff/src/storage"
+	"github.com/rodkranz/ff/src/file"
+	"github.com/fatih/color"
 )
 
 type Search struct {
@@ -23,16 +22,11 @@ type Search struct {
 	CaseSensitive bool
 }
 
-type items struct {
-	id     int
-	file   *file.File
-	status bool
-}
-
 var (
-	localStorage    *storage.Storage
+	localStorage *storage.Storage
 	ColorSearchText = color.New(color.FgRed).SprintFunc()
 )
+
 
 func (s *Search) SetStorage(storage *storage.Storage) {
 	localStorage = storage
@@ -51,7 +45,7 @@ func (s *Search) IsValidName(path string) bool {
 
 	if !s.CaseSensitive {
 		searchMe = strings.ToLower(searchMe)
-		path = strings.ToLower(path)
+		path	 = strings.ToLower(path)
 	}
 
 	return strings.Contains(path, searchMe)
@@ -105,29 +99,35 @@ func (s *Search) HasText(f *file.File) bool {
 	return len(f.Comment) > 0
 }
 
-func (s *Search) WorkFind(resChan chan<- items, i int, wg *sync.WaitGroup) {
-	defer wg.Done()
+func (s *Search) FindInGroup() {
+	totalFiles 	:= len(localStorage.Files)
+	maxThread 	:= 4
+	indexFile 	:= 0
 
-	item := items{
-		id:     i,
-		file:   localStorage.GetById(i),
-		status: s.HasText(localStorage.GetById(i)),
+	for indexFile < totalFiles {
+		/** Make num of next threads **/
+		numThreads := 0;
+		for thread := 0; thread < maxThread; thread++ {
+			numThreads = numThreads+1
+			if (indexFile+numThreads) >= totalFiles {
+				break
+			}
+		}
+
+		semaphore := make(chan bool, numThreads)
+		for thread := 0; thread < numThreads; thread++  {
+			go func (i int) {
+				file := localStorage.GetById(i)
+				file.Enabled = s.HasText(file)
+				semaphore <- true
+			}(indexFile)
+			indexFile = indexFile + 1
+		}
+
+		for thread := 0; thread < numThreads; thread++  {
+			<-semaphore
+		}
 	}
-
-	resChan <- item
-
-	//
-	//var ctrl sync.WaitGroup
-	//
-	//for i := 0; i < len(localStorage.Files); i++ {
-	//	ctrl.Add(1)
-	//	go func (file *file.File){
-	//		file.Enabled = s.HasText(file)
-	//		ctrl.Done()
-	//	}(localStorage.GetById(i))
-	//}
-	//
-	//ctrl.Wait()
 }
 
 func (s *Search) SearchByText() {
@@ -135,25 +135,7 @@ func (s *Search) SearchByText() {
 		return
 	}
 
-	var wg sync.WaitGroup
-	wg.Add(len(localStorage.Files))
-
-	chanItem := make(chan items)
-
-	//for _, file := range localStorage.Files {
-	for i := 0; i < len(localStorage.Files); i++ {
-		go s.WorkFind(chanItem, i, &wg)
-	}
-
-	for i := 0; i < len(localStorage.Files); i++ {
-		item := <- chanItem
-		fmt.Printf("-> %v \n", item.id)
-	}
-
-	wg.Wait()
-
-	os.Exit(1)
-	//s.FindInGroup()
+	s.FindInGroup()
 }
 
 func (s *Search) Range(line, text string) string {
