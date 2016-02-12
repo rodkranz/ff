@@ -2,11 +2,13 @@
 
 Find File or text in file with go language.
 
+
 -----------------------
+
 ### Source Find File ###
 
 * Find text or file name 
-* Version: 1.1.1
+* Version: 1.1.2
 * License: ISC
 
 
@@ -44,25 +46,28 @@ Find File or text in file with go language.
 ```
     $ ff -h
     Usage of ff:
-      -a int
-            Range around of the word (default 10)
-      -cpu int
-            Number of CPU you have 4 available (default 1)
-      -d string
-            Text searching (default "./")
-      -f string
-            Filter by file name
-      -no-color
-            Disable color output
-      -r	Search by this Regex
-      -t string
-            Text searching
-      -u	Use case sensitive (default true)
-      -update
-            Check update
-      -version
-            Show the version
+        --exclude-dir string
+                Exclude dir from reader (default ".bzr,CVS,.git,.hg,.svn")
+        --no-color
+                Disable color output
+        --version
+                Show the version
+        -a int
+                Range around of the word (default 10)
+        -cpu int
+                Number of CPU you have 4 available (default 1)
+        -d string
+                Text searching (default "./")
+        -f string
+                Filter by file name
+        -r    Search by this Regex
+        -t string
+                Text searching
+        -u    Use case sensitive (default true)
+        -up
+                Check update                           
 ```
+
 
 -----------------------
 
@@ -83,6 +88,7 @@ Without parameters will show everything in subfolders.
 	.....
 ```
 
+
 -----------------------
 
 ### Parameter -f
@@ -102,7 +108,9 @@ Parameter `-f` of file, this parameter you will define the name of file  that yo
 	....
 ```
 
+
 -----------------------
+
 ### Parameter -t
 
 Parameter `-t` of text, this text that you will search inside of file.
@@ -122,6 +130,7 @@ Parameter `-t` of text, this text that you will search inside of file.
 		[15] = 'http://rlopes.realestat
 	----------------------------------------------------------------------------------------------------
 ```
+
 
 -----------------------
 
@@ -168,6 +177,7 @@ With parameter `-r` as regex will defined that your `-t` is a regular expression
 	----------------------------------------------------------------------------------------------------
 ```
 
+
 -----------------------
 
 ### Parameter Combination
@@ -187,6 +197,7 @@ you can match both of the parameters as `-t` and `-f` to create more complex sea
 		[15] = 'http://rlopes.realestat
 	----------------------------------------------------------------------------------------------------
 ```
+
 
 -----------------------
 
@@ -209,6 +220,7 @@ The `-d` parameter will active the debug mode, you can see the time of searching
 	final Execution took 2.031182ms
 ```
 
+
 -----------------------
 
 ### Parameter -v
@@ -229,11 +241,13 @@ Show the version of application
     ----------------------------------------------------------------------------------------------------
 ```
 
+
 -----------------------
 
 ### Parameter -h
 
 Show the helper and parameters available
+
 
 -----------------------
 
@@ -241,12 +255,14 @@ Show the helper and parameters available
 
 Check if exist an update available of sistem.
 
+
 -----------------------
 
 ## Time Execution
 	
 The all tests was made in the same computer
 the folder has `1434` files
+
 
 -----------------------
 
@@ -269,6 +285,7 @@ The `ff` running looking for word `rlopes`
 	ff rlopes  0,55s user 0,04s system 75% cpu 0,199 total
 ```
 
+
 -----------------------
 
 The `ack` running looking for word `rlopes`
@@ -285,6 +302,7 @@ The `ack` running looking for word `rlopes`
     ack rlopes  0,29s user 0,03s system 99% cpu 0,322 total
 ```
 
+
 -----------------------
 
 The `grep` running looking for word `rlopes`
@@ -300,5 +318,6 @@ The `grep` running looking for word `rlopes`
     ./jaws/jaws/realestate/service/attribute/AttributeService.php: * User: rlopes
     grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn} -i -r 'rlopes' ./  4,26s user 0,05s system 99% cpu 4,328 total
 ```
+
 
 -----------------------
