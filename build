@@ -50,18 +50,27 @@ function compileLinux {
     echo -n "Compiling file: '${finalFile}'"
     env GOOS=linux GOARCH=arm GOARM=7 ${goPath} build -o "${releasePath}/linux/${finalFile}" "${projectPath}/${mainFile}"
     echo -e "\rCompiled  "
+    echo -n "Compressing: '${finalFile}'"
+    tar -zcf "release/linux_${finalFile}.tar.gz" "release/linux/${finalFile}"
+    echo -e "\rCompressed  "
 }
 
 function compileMac {
     echo -n "Compiling file: '${finalFile}'"
     env GOOS=darwin GOARCH=386 ${goPath} build -o "${releasePath}/macosx/${finalFile}" "${projectPath}/${mainFile}"
     echo -e "\rCompiled  "
+    echo -n "Compressing: '${finalFile}'"
+    tar -zcf "release/macosx_${finalFile}.tar.gz" "release/macosx/${finalFile}"
+    echo -e "\rCompressed  "
 }
 
 function compileWin {
     echo -n "Compiling file: '${finalFile}.exe'"
     env GOOS=windows GOARCH=386 ${goPath} build -o "${releasePath}/windows/${finalFile}.exe" "${projectPath}/${mainFile}"
     echo -e "\rCompiled  "
+    echo -n "Compressing: '${finalFile}'"
+    tar -zcf "release/windows_${finalFile}.tar.gz" "release/windows/${finalFile}.exe"
+    echo -e "\rCompressed  "
 }
 
 
