@@ -39,13 +39,20 @@ func ShowPretty(search *search.Search) {
 }
 func ShowHeader(search *search.Search) {
 	ShowLine()
-	fmt.Printf("%s : %s\n", ColorTitles("Path"), search.Path)
-	fmt.Printf("%s : %s\n", ColorTitles("File"), search.File)
+	fmt.Printf("%s  : %s\n", ColorTitles("Path"), search.Path)
+
+	if len(search.File) != 0 {
+		fmt.Printf("%s  : %s\n", ColorTitles("File"), search.File)
+	}
+
+	if len(search.Exclude) != 0 {
+		fmt.Printf("%s: %v\n", ColorTitles("Ignore"), search.Exclude)
+	}
 
 	if len(search.Text) > 0 {
 		searchBy := "Text "
 		if search.WithRegex {
-			searchBy = "Regex"
+			searchBy = "Regex "
 		}
 		fmt.Printf("%s: %s\n", ColorTitles(searchBy), search.Text)
 	}
