@@ -42,7 +42,7 @@ func ShowHeader(search *search.Search) {
 	fmt.Printf("%s  : %s\n", ColorTitles("Path"), search.Path)
 
 	if len(search.File) != 0 {
-		fmt.Printf("%s   : %s\n", ColorTitles("File"), search.File)
+		fmt.Printf("%s  : %s\n", ColorTitles("File"), search.File)
 	}
 
 	if len(search.Exclude) != 0 {
@@ -50,11 +50,11 @@ func ShowHeader(search *search.Search) {
 	}
 
 	if len(search.Text) > 0 {
-		fmt.Printf("%s: %s\n", ColorTitles("Text  "), search.Text)
-
-	}
-	if len(search.TRegex) > 0 {
-		fmt.Printf("%s: %s\n", ColorTitles("Regex "), search.TRegex)
+		searchBy := "Text "
+		if search.WithRegex {
+			searchBy = "Regex "
+		}
+		fmt.Printf("%s: %s\n", ColorTitles(searchBy), search.Text)
 	}
 
 	ShowLine()

@@ -34,7 +34,7 @@ func init() {
 	flag.BoolVar(&color.NoColor, "-no-color", false, "Disable color output")
 	flag.BoolVar(&showVersion, "-version", false, "Show the version")
 	flag.BoolVar(&checkUpdate, "up", false, "Check update")
-	flag.StringVar(&searching.TRegex, "regex",  "", "Search by this Regex")
+	flag.BoolVar(&searching.WithRegex, "regex",  false, "Search by this Regex")
 	exclude     := *flag.String("-exclude-dir", ".bzr,CVS,.git,.hg,.svn", "Exclude dir from reader")
 
 	flag.Parse()
@@ -43,8 +43,8 @@ func init() {
 		searching.Exclude = strings.Split(exclude, ",")
 	}
 
-	if len(searching.TRegex) > 0 {
-		searching.Regex = regexp.MustCompile(searching.TRegex)
+	if searching.WithRegex {
+		searching.Regex = regexp.MustCompile(searching.Text)
 	}
 
 	if CPUNum > runtime.NumCPU() {

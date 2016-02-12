@@ -20,7 +20,7 @@ type Search struct {
 	Path          string
 	Exclude       []string
 	Reach         int
-	TRegex        string
+	WithRegex     bool
 	Regex         *regexp.Regexp
 	CaseSensitive bool
 }
@@ -108,11 +108,11 @@ func (s *Search) HasText(f *file.File) bool {
 		f.LineNum++
 		line := scanner.Text()
 
-		if len(s.TRegex) != 0 {
+		if s.WithRegex {
 			s.FindRegex(f, line)
 		}
 
-		if len(s.Text) != 0 {
+		if !s.WithRegex {
 			s.FindText(f, line)
 		}
 	}
@@ -153,9 +153,7 @@ func (s *Search) FindInGroup() {
 
 func (s *Search) SearchByText() {
 	if len(s.Text) == 0 {
-		if len(s.TRegex) == 0 {
-			return
-		}
+		return
 	}
 
 	s.FindInGroup()
