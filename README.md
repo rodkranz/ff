@@ -27,7 +27,7 @@ Find File or text in file with go language.
 	$ env GOOS=linux GOARCH=arm GOARM=7 go build -o ff main.go
 
 
-#### Compiling to *MAcOSX*
+#### Compiling to *MacOSx*
 
 	$ env GOOS=darwin GOARCH=386 go build -o ff main.go
 
