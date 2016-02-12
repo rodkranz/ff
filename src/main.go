@@ -28,24 +28,24 @@ func init() {
 	flag.IntVar(&CPUNum, "cpu", 1, fmt.Sprintf("Number of CPU you have %d available", runtime.NumCPU()))
 	flag.StringVar(&searching.Text, "t", "", "Text searching")
 	flag.StringVar(&searching.File, "f", "", "Filter by file name")
-	flag.StringVar(&searching.Path, "d", "./", "Text searching")
+	flag.StringVar(&searching.Path, "d", "./", "Directory searching")
 	flag.IntVar(&searching.Reach, "a", 10, "Range around of the word")
-	flag.BoolVar(&searching.WithRegex, "r", false, "Search by this Regex")
 	flag.BoolVar(&searching.CaseSensitive, "u", true, "Use case sensitive")
 	flag.BoolVar(&color.NoColor, "-no-color", false, "Disable color output")
 	flag.BoolVar(&showVersion, "-version", false, "Show the version")
 	flag.BoolVar(&checkUpdate, "up", false, "Check update")
-	exclude := *flag.String("-exclude-dir", ".bzr,CVS,.git,.hg,.svn", "Exclude dir from reader")
+	flag.StringVar(&searching.TRegex, "regex",  "", "Search by this Regex")
+	exclude     := *flag.String("-exclude-dir", ".bzr,CVS,.git,.hg,.svn", "Exclude dir from reader")
+
+	flag.Parse()
 
 	if len(exclude) > 0 {
 		searching.Exclude = strings.Split(exclude, ",")
 	}
 
-	if searching.WithRegex {
-		searching.Regex = regexp.MustCompile(searching.Text)
+	if len(searching.TRegex) > 0 {
+		searching.Regex = regexp.MustCompile(searching.TRegex)
 	}
-
-	flag.Parse()
 
 	if CPUNum > runtime.NumCPU() {
 		CPUNum = runtime.NumCPU()

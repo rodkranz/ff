@@ -11,6 +11,7 @@ import (
 	"github.com/rodkranz/ff/src/file"
 	"github.com/fatih/color"
 	"sort"
+	"github.com/golang/glog"
 )
 
 type Search struct {
@@ -19,7 +20,7 @@ type Search struct {
 	Path          string
 	Exclude       []string
 	Reach         int
-	WithRegex     bool
+	TRegex        string
 	Regex         *regexp.Regexp
 	CaseSensitive bool
 }
@@ -76,6 +77,10 @@ func (s *Search) visitor(path string, f os.FileInfo, _ error) error {
 }
 
 func (s *Search) FindRegex(f *file.File, line string) {
+	if s.Regex == nil {
+		glog.Error("E.R. has error!")
+	}
+
 	words := s.Regex.FindAllString(line, -1)
 	if len(words) > 0 {
 		for _, v := range words {
@@ -103,11 +108,11 @@ func (s *Search) HasText(f *file.File) bool {
 		f.LineNum++
 		line := scanner.Text()
 
-		if s.WithRegex {
+		if len(s.TRegex) != 0 {
 			s.FindRegex(f, line)
 		}
 
-		if !s.WithRegex {
+		if len(s.Text) != 0 {
 			s.FindText(f, line)
 		}
 	}
@@ -148,7 +153,9 @@ func (s *Search) FindInGroup() {
 
 func (s *Search) SearchByText() {
 	if len(s.Text) == 0 {
-		return
+		if len(s.TRegex) == 0 {
+			return
+		}
 	}
 
 	s.FindInGroup()
