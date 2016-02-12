@@ -10,6 +10,8 @@ import (
 	"runtime"
 	"github.com/rodkranz/ff/src/update"
 	"fmt"
+	"os"
+	"strings"
 )
 
 var (
@@ -30,9 +32,14 @@ func init() {
 	flag.IntVar(&searching.Reach, "a", 10, "Range around of the word")
 	flag.BoolVar(&searching.WithRegex, "r", false, "Search by this Regex")
 	flag.BoolVar(&searching.CaseSensitive, "u", true, "Use case sensitive")
-	flag.BoolVar(&color.NoColor, "no-color", false, "Disable color output")
-	flag.BoolVar(&showVersion, "version", false, "Show the version")
-	flag.BoolVar(&checkUpdate, "update", false, "Check update")
+	flag.BoolVar(&color.NoColor, "-no-color", false, "Disable color output")
+	flag.BoolVar(&showVersion, "-version", false, "Show the version")
+	flag.BoolVar(&checkUpdate, "up", false, "Check update")
+	exclude := *flag.String("-exclude-dir", ".bzr,CVS,.git,.hg,.svn", "Exclude dir from reader")
+
+	if len(exclude) > 0 {
+		searching.Exclude = strings.Split(exclude, ",")
+	}
 
 	if searching.WithRegex {
 		searching.Regex = regexp.MustCompile(searching.Text)
@@ -57,11 +64,13 @@ func main() {
 
 	if showVersion {
 		output.ShowVersion(Version)
+		os.Exit(0)
 	}
 
 	if checkUpdate {
 		newVer, has := update.NewUpdate(UrlRepo, Version)
 		output.ShowUpdate(newVer, has, UrlRepo)
+		os.Exit(0)
 	}
 
 	// Find Files filtering by name
@@ -71,4 +80,5 @@ func main() {
 	searching.SearchByText()
 
 	output.ShowPretty(&searching)
+	os.Exit(0)
 }

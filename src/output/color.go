@@ -5,7 +5,6 @@ import (
 
 	"fmt"
 	"strings"
-	"os"
 
 	"github.com/rodkranz/ff/src/search"
 	"github.com/rodkranz/ff/src/file"
@@ -37,7 +36,6 @@ func ShowPretty(search *search.Search) {
 		}
 	}
 	ShowFooter(search)
-	os.Exit(0)
 }
 func ShowHeader(search *search.Search) {
 	ShowLine()
@@ -86,10 +84,10 @@ func ShowVersion(version string) {
 	fmt.Printf("  Project : %s\n", ColorFileName("https://github.com/rodkranz/ff"))
 	fmt.Printf("  Contact : %s\n", ColorFileName("dev.rodrigo.lopes@gmail.com"))
 	ShowLine()
-	os.Exit(0)
 }
 
 func ShowUpdate(newVersion string, hasUpdate bool, UrlRepo string) {
+	ShowLine()
 	if hasUpdate {
 		fmt.Printf("Exist a new update available\n")
 		fmt.Printf("New version is %s.\n", ColorNumbers(newVersion))
@@ -98,6 +96,5 @@ func ShowUpdate(newVersion string, hasUpdate bool, UrlRepo string) {
 		fmt.Printf("You have the latest version\n")
 		fmt.Printf("Current version is %s.\n", ColorNumbers(newVersion))
 	}
-
-	os.Exit(0)
+	ShowLine()
 }

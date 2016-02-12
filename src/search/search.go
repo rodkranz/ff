@@ -10,12 +10,14 @@ import (
 	"github.com/rodkranz/ff/src/storage"
 	"github.com/rodkranz/ff/src/file"
 	"github.com/fatih/color"
+	"sort"
 )
 
 type Search struct {
 	Text          string
 	File          string
 	Path          string
+	Exclude       []string
 	Reach         int
 	WithRegex     bool
 	Regex         *regexp.Regexp
@@ -27,6 +29,16 @@ var (
 	ColorSearchText = color.New(color.FgRed).SprintFunc()
 )
 
+func (s *Search) NeedToExclude(f os.FileInfo) bool {
+	if f.Name() == "." {
+		return false
+	}
+	if f.IsDir() {
+		i := sort.SearchStrings(s.Exclude, f.Name())
+		return (len(s.Exclude) != i)
+	}
+	return false
+}
 
 func (s *Search) SetStorage(storage *storage.Storage) {
 	localStorage = storage
@@ -52,6 +64,10 @@ func (s *Search) IsValidName(path string) bool {
 }
 
 func (s *Search) visitor(path string, f os.FileInfo, _ error) error {
+	if s.NeedToExclude(f) {
+		return filepath.SkipDir
+	}
+
 	if s.IsValidName(path) {
 		localStorage.Add(*file.NewFile(path, f))
 	}
