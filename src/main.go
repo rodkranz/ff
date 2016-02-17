@@ -2,16 +2,17 @@ package main
 
 import (
 	"flag"
-	"github.com/rodkranz/ff/src/search"
 	"regexp"
-	"github.com/rodkranz/ff/src/output"
-	"github.com/rodkranz/ff/src/storage"
-	"github.com/fatih/color"
 	"runtime"
-	"github.com/rodkranz/ff/src/update"
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/fatih/color"
+	"github.com/rodkranz/ff/src/search"
+	"github.com/rodkranz/ff/src/output"
+	"github.com/rodkranz/ff/src/storage"
+	"github.com/rodkranz/ff/src/update"
 )
 
 var (
@@ -19,8 +20,6 @@ var (
 	showVersion   bool
 	checkUpdate   bool
 	CPUNum		  int
-	Version       = "v1.1.2"
-	UrlRepo       = "https://github.com/rodkranz/ff/releases"
 )
 
 
@@ -60,25 +59,44 @@ func init() {
 }
 
 func main() {
+	// allow to use N of CPUs available.
 	runtime.GOMAXPROCS(CPUNum)
 
-	if showVersion {
-		output.ShowVersion(Version)
+	if showVersion || checkUpdate {
+		// create a instance of update
+		up := update.NewUpdate("v1.1.2",
+			`https://github.com/rodkranz/ff/releases`,
+			`href=\"/rodkranz/ff/releases/tag/[ANY]"`)
+
+		// show the current vertion of program
+		if showVersion {
+			output.ShowVersion(up.Version)
+		}
+
+		// Check if it has update.
+		if checkUpdate {
+			newVer, has := up.Check()
+			output.ShowUpdate(newVer, has, up.Url)
+		}
+
+		// finalize the application correctly
 		os.Exit(0)
 	}
 
-	if checkUpdate {
-		newVer, has := update.NewUpdate(UrlRepo, Version)
-		output.ShowUpdate(newVer, has, UrlRepo)
-		os.Exit(0)
-	}
+	// Show text 'searching'
+	output.ShowWaitSearching()
 
-	// Find Files filtering by name
+	// create a virtual storage
 	storage := *storage.NewStorage()
 	searching.SetStorage(&storage)
+
+	// search the files/text
 	searching.FindFiles()
 	searching.SearchByText()
 
+	//show result pretty
 	output.ShowPretty(&searching)
+
+	// finalize the application correctly
 	os.Exit(0)
 }
