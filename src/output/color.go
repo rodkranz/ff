@@ -19,7 +19,7 @@ var (
 
 func ShowPretty(search *search.Search) {
 	storage := search.GetStorage()
-
+	ClearLine()
 	ShowHeader(search)
 	for _, file := range storage.Files {
 		if !file.Enabled {
@@ -104,4 +104,12 @@ func ShowUpdate(newVersion string, hasUpdate bool, UrlRepo string) {
 		fmt.Printf("Current version is %s.\n", ColorNumbers(newVersion))
 	}
 	ShowLine()
+}
+
+func ShowWaitSearching() {
+	fmt.Printf("Searching please wait...")
+}
+
+func ClearLine() {
+	fmt.Printf("\r")
 }

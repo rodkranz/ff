@@ -5,15 +5,21 @@ import (
 	"log"
 	"io/ioutil"
 	"regexp"
+	"strings"
 )
 
-type Update struct {
+type UpJob struct {
 	Version string
 	Url     string
+	regex   string
 }
 
-func NewUpdate(url string, version string) (string, bool) {
-	res, err := http.Get(url)
+func NewUpdate(version, url, regex string) *UpJob {
+	return &UpJob{version, url, regex}
+}
+
+func (u *UpJob) Check() (string, bool) {
+	res, err := http.Get(u.Url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,17 +30,16 @@ func NewUpdate(url string, version string) (string, bool) {
 		log.Fatal(err)
 	}
 
-	tagLink := "href=\"/rodkranz/ff/releases/tag/"
-	reg := regexp.MustCompile(tagLink + "(.*)\"")
+	reg := regexp.MustCompile(strings.Replace(u.regex, "[ANY]", `(.*)">`, -1))
 	tag := reg.Find(bytes)
 
 	if len(tag) == 0 {
 		return "", false
 	}
 
-	tag = tag[len(tagLink):len(tag)-1]
+	tag = tag[len(u.regex):len(tag)-1]
 	tagString := string(tag)
-	hasUpdate := (tagString != version)
+	hasUpdate := (tagString != u.Version)
 
 	return tagString, hasUpdate
 }
