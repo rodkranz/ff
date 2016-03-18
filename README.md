@@ -11,6 +11,17 @@ Find File or text in file with go language.
 * Version: 1.1.2
 * License: ISC
 
+-----------------------
+
+## Download
+
+This is the latest version of FF.
+
+* [Linux](https://mega.nz/#!5QZj3Rab!tVUxSvhxVPkfWhVdhm4x_h1Cx0q3RttW6IFajXCF-oo)
+* [MacOSx](https://mega.nz/#!MIYWWL5T!kBwAp0vFcN67A_fcC2cd4JR5KDKaACqfjhqIQr1M1dg)
+* [Windows](https://mega.nz/#!NdJU2ALK!eqhiuCq3EHmH59AUO5wxRNbDLzsUavrKa9Tm7MjcZjY)
+
+Linux or MacOSx you need to put the file in your `bin`'s folder and Windows You have to put the file in `windows`'s folder
 
 -----------------------
 
@@ -44,28 +55,43 @@ Find File or text in file with go language.
 ##### Helper: 
 
 ```
-    $ ff -h
-    Usage of ff:
-        --exclude-dir string
+        Usage of ff:
+          --exclude-dir string
                 Exclude dir from reader (default ".bzr,CVS,.git,.hg,.svn")
-        --no-color
+          --no-color
                 Disable color output
-        --version
+          --version
                 Show the version
-        -a int
-                Range around of the word (default 10)
-        -cpu int
-                Number of CPU you have 4 available (default 1)
-        -d string
-                Text searching (default "./")
-        -f string
+          -alsologtostderr
+                log to standard error as well as files
+          -cpu int
+                Number of CPU you have 4 available (default 4)
+          -d string
+                Directory searching (default "./")
+          -f string
                 Filter by file name
-        -r    Search by this Regex
-        -t string
+          -log_backtrace_at value
+                when logging hits line file:N, emit a stack trace (default :0)
+          -log_dir string
+                If non-empty, write log files in this directory
+          -logtostderr
+                log to standard error instead of files
+          -r int
+                Range around of the word (default 10)
+          -regex
+                Search by this Regex
+          -stderrthreshold value
+                logs at or above this threshold go to stderr
+          -t string
                 Text searching
-        -u    Use case sensitive (default true)
-        -up
-                Check update                           
+          -u	Use case sensitive (default true)
+          -up
+                Check update
+          -v value
+                log level for V logs
+          -vmodule value
+                comma-separated list of pattern=N settings for file-filtered logging
+                       
 ```
 
 
@@ -251,9 +277,17 @@ Show the helper and parameters available
 
 -----------------------
 
-### Parameter -update
+### Parameter -up
 
 Check if exist an update available of sistem.
+
+```
+    $ ff -up
+        ----------------------------------------------------------------------------------------------------
+        You have the latest version
+        Current version is .
+        ----------------------------------------------------------------------------------------------------
+```
 
 
 -----------------------
