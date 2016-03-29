@@ -1,4 +1,2 @@
-lookingFor/
 .idea
-src/test
-.DS_Store
+/test
