@@ -31,29 +31,29 @@ func init() {
 	}
 
 	// General
-	flag.IntVar(&conf.CPUNum, "cpu", runtime.NumCPU(), fmt.Sprintf("Number of CPU you have %d available", runtime.NumCPU()))
-	flag.BoolVar(&conf.force,  "force", 	false, "Replace all result without ask.")
-	//flag.IntVar(&conf.reach, "r", 10, "Range around of the word")
+	flag.IntVar(&conf.CPUNum, 	"cpu", runtime.NumCPU(), fmt.Sprintf("Number of CPU you have %d available", runtime.NumCPU()))
+	flag.BoolVar(&conf.force,  	"force", 	false, "Replace all result without ask.")
+	//flag.IntVar(&conf.reach, 	"r", 10, "Range around of the word")
 
 	// FF Config
-	flag.StringVar(&conf.ffConfig.Text, "t", "", "Text ffConfig")
-	flag.StringVar(&conf.ffConfig.FilterFile, "f", "", "Filter by file name")
-	flag.StringVar(&conf.ffConfig.Directory, "d", "./", "Directory ffConfig")
-	flag.BoolVar(&conf.ffConfig.CaseInsensitive, "cis", false, "Search text case insensitive")
+	flag.StringVar(&conf.ffConfig.Text, 			"t", "", "Text ffConfig")
+	flag.StringVar(&conf.ffConfig.FilterFile, 		"f", "", "Filter by file name")
+	flag.StringVar(&conf.ffConfig.Directory, 		"d", "./", "Directory ffConfig")
+	flag.BoolVar(&conf.ffConfig.CaseInsensitive, 	"cis", false, "Search text case insensitive")
 
 	// Replace Config
 	flag.StringVar(&conf.rpConfig.Text, "replace",  "", "Replace result to text")
 
 	// Update Config
-	flag.BoolVar(&conf.showVersion, "-version", false, "Show the version")
-	flag.BoolVar(&conf.upCheck, "up", false, "Check update")
+	flag.BoolVar(&conf.showVersion, "ver", false, "Show the version")
+	flag.BoolVar(&conf.upCheck, 	"up", 		false, "Check update")
 
 	// Output config
-	flag.BoolVar(&color.NoColor, "-no-color", false, "Disable color output")
+	flag.BoolVar(&color.NoColor, 	"-no-color", false, "Disable color output")
 
 	// FF with regex
 	var withRegex bool
-	flag.BoolVar(&withRegex, "reg", false, "Search by this Regex")
+	flag.BoolVar(&withRegex, 	"reg", false, "Search by this Regex")
 
 	// exclude files or folder with this name by default.
 	exclude := *flag.String("-exclude-dir", ".bzr,CVS,.git,.hg,.svn", "Exclude dir from reader")
@@ -100,13 +100,18 @@ func main() {
 
 		// show the current vertion of program
 		if conf.showVersion {
-			//terminal.ShowVersion(VER)
+			layout.ShowVersion(VER)
 			os.Exit(0)
 		}
 
 		// create a instance of update
 		up := update.NewUpdate(conf.upConfig)
-		up.Check()
+
+		// Check if has update and inform layout to do what next.
+		if layout.ShowUpdate(up.Check()) {
+			// if has update.
+			up.Update();
+		}
 
 		// finalize the application correctly
 		os.Exit(0)
@@ -156,4 +161,3 @@ type configuration struct {
 	upCheck     bool
 	CPUNum      int
 }
-

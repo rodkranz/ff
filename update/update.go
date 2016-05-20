@@ -49,3 +49,7 @@ func (u *Update) Check() (string, bool) {
 
 	return tagString, hasUpdate
 }
+
+func (u *Update) Update() {
+
+}

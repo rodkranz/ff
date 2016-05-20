@@ -96,7 +96,6 @@ func (l *Layout) askToReplaceComment(elm ff.Element, rpl replace.Replace, force 
 			lines = append(lines, k)
 			continue
 		}
-
 		c := l.bash.Confirm(fmt.Sprintf("%v [Y/N]", line))
 		if (c) {
 			lines = append(lines, k)
@@ -114,4 +113,17 @@ func (l *Layout) ShowWait() {
 
 func (l *Layout) newLine()  {
 	fmt.Printf("\n")
+}
+
+
+
+func (l *Layout) ShowVersion(ver string) {
+
+}
+
+func (l *Layout) ShowUpdate(ver string, has bool) bool {
+
+
+
+	return false
 }
