@@ -10,7 +10,6 @@ import (
 
 type Layout struct {
 	bash *terminal.Bash
-
 }
 
 func NewLayout(b *terminal.Bash) *Layout {
@@ -44,13 +43,11 @@ func (l *Layout) DrawWithReplace(rpl replace.Replace, elms []ff.Element, force b
 	}
 }
 
-
 func (l *Layout) DrawError(err error) {
 
 }
 
-
-func (l *Layout) showFileName(elm ff.Element)  {
+func (l *Layout) showFileName(elm ff.Element) {
 	if len(elm.Line) == 0 {
 		elm.File.Name()
 
@@ -111,19 +108,27 @@ func (l *Layout) ShowWait() {
 	fmt.Printf("Searching please wait... \r")
 }
 
-func (l *Layout) newLine()  {
+func (l *Layout) newLine() {
 	fmt.Printf("\n")
 }
 
-
-
 func (l *Layout) ShowVersion(ver string) {
-
+	fmt.Printf("The current version of FF is %v\n", ver)
 }
 
-func (l *Layout) ShowUpdate(ver string, has bool) bool {
+func (l *Layout) ShowUpdate(verNew, verOld string, has bool) bool {
 
+	if (!has) {
+		fmt.Printf("The application already updated with latest version.")
+		return false
+	}
 
+	fmt.Printf(`
+The [FF] application has update available.
+   Version Current: %v
+ Version Available: %v
 
+`, verOld, verNew)
+	//return l.bash.Confirm("Would you like to update? [Y/N]");
 	return false
 }

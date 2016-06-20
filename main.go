@@ -17,7 +17,7 @@ import (
 	"github.com/rodkranz/ff/replace"
 )
 
-const VER = "1.1.2"
+const VER = "1.1.1"
 
 var conf = &configuration{}
 
@@ -27,7 +27,7 @@ func init() {
 	conf.upConfig = update.Config{
 		VER,
 		`https://github.com/rodkranz/ff/releases`,
-		`href=\"/rodkranz/ff/releases/tag/[ANY]"`,
+		`href=\"/rodkranz/ff/releases/tag/[ANY]\"`,
 	}
 
 	// General
@@ -144,8 +144,6 @@ func main() {
 		// Draw results
 		layout.Draw(result)
 	}
-
-
 
 	// finalize the application correctly
 	os.Exit(0)
