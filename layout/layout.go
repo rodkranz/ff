@@ -119,7 +119,7 @@ func (l *Layout) ShowVersion(ver string) {
 func (l *Layout) ShowUpdate(verNew, verOld string, has bool) bool {
 
 	if (!has) {
-		fmt.Printf("The application already updated with latest version.")
+		fmt.Printf("The application already updated with latest version.\n")
 		return false
 	}
 
@@ -129,6 +129,6 @@ The [FF] application has update available.
  Version Available: %v
 
 `, verOld, verNew)
-	//return l.bash.Confirm("Would you like to update? [Y/N]");
-	return false
+	return l.bash.Confirm("Would you like to update? [Y/N]");
+	//return false
 }

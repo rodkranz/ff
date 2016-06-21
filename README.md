@@ -42,25 +42,30 @@ Find File or text in file with go language.
 ##### Helper: 
 
 ```
-    $ ff -h
-    Usage of ff:
-      -a int
-            Range around of the word (default 10)
+    Usage of ./ff:
+      --exclude-dir string
+            Exclude dir from reader (default ".bzr,CVS,.git,.hg,.svn")
+      --no-color
+            Disable color output
+      -cis
+            Search text case insensitive
       -cpu int
-            Number of CPU you have 4 available (default 1)
+            Number of CPU you have 4 available (default 4)
       -d string
-            Text searching (default "./")
+            Directory ffConfig (default "./")
       -f string
             Filter by file name
-      -no-color
-            Disable color output
-      -r	Search by this Regex
+      -force
+            Replace all result without ask.
+      -reg
+            Search by this Regex
+      -replace string
+            Replace result to text
       -t string
-            Text searching
-      -u	Use case sensitive (default true)
-      -update
+            Text ffConfig
+      -up
             Check update
-      -version
+      -ver
             Show the version
 ```
 
@@ -71,16 +76,31 @@ Find File or text in file with go language.
 Without parameters will show everything in subfolders.
 
 ```
-	$ ff
-	----------------------------------------------------------------------------------------------------
-	Path : ./
-	----------------------------------------------------------------------------------------------------
-	[File] ./ 
-	[File] .git 
-	[File] .git/COMMIT_EDITMSG 
-	[File] .git/FETCH_HEAD 
-	[File] .git/HEAD 
+    $ ff
+    [dir] ./g please wait... 
+    [dir] admin
+    [file] admin/config.dev.ini
+    [file] admin/config.ini
+    [dir] admin/controller
+    [file] admin/controller/AjaxAdminController.php
+    [file] admin/controller/AjaxAttributesController.php
+    [file] admin/controller/AjaxAuthenticationController.php
+
 	.....
+```
+
+With one parameter will find for text.
+```
+	$ ff rodrigo 
+    [file] admin/controller/AjaxAdminController.php (lines: 1)
+    [7] 	 * @author    Rodrigo Lopes <rodrigo.lopes@fixeads.com> 
+    
+    [file] admin/controller/AjaxAttributesController.php (lines: 1)
+    [7] 	 * @author    Rodrigo Lopes <rodrigo.lopes@fixeads.com> 
+    
+    [file] admin/controller/AjaxCompaniesController.php (lines: 1)
+    [7] 	 * @author Rodrigo Lopes <rodrigo.lopes@fixeds.com> 
+    .....
 ```
 
 -----------------------
@@ -90,15 +110,12 @@ Without parameters will show everything in subfolders.
 Parameter `-f` of file, this parameter you will define the name of file  that you should like to filter
 
 ```
-	$ ff -f css
-	----------------------------------------------------------------------------------------------------
-	Path : ./
-	File : css
-	----------------------------------------------------------------------------------------------------
-	[File] lookingFor/resources/css 
-	[File] lookingFor/resources/css/angular-bootstrap-datepicker.css 
-	[File] lookingFor/resources/css/bootstrap3.3.2.min.css 
-	[File] lookingFor/resources/css/font-awesome.css 
+	$ ff -f css                                                                                                                                                                                                                   develop  ✭
+    [dir] admin/resources/css
+    [file] admin/resources/css/adminLogin.css
+    [file] admin/resources/css/adminTheme.css
+    [file] admin/resources/css/angular-bootstrap-datepicker.css
+    [file] admin/resources/css/animate.css
 	....
 ```
 
@@ -108,19 +125,16 @@ Parameter `-f` of file, this parameter you will define the name of file  that yo
 Parameter `-t` of text, this text that you will search inside of file.
 	
 ```
-	$ ff -t rlopes
-	----------------------------------------------------------------------------------------------------
-	Path : ./
-	Text : rlopes
-	----------------------------------------------------------------------------------------------------
-	[File] lookingFor/resources/css/toastr.css 
-		[144] .rlopes { lorem i
-	----------------------------------------------------------------------------------------------------
-	[File] lookingFor/services.dev.ini 
-		[3] omain = ".rlopes.realestat
-		[6] = 'http://rlopes.realestat
-		[15] = 'http://rlopes.realestat
-	----------------------------------------------------------------------------------------------------
+	$ ff -t rodrigo
+    [file] admin/controller/AjaxAdminController.php (lines: 1)
+    [7] 	 * @author    Rodrigo Lopes <rodrigo.lopes@fixeads.com> 
+    
+    [file] admin/controller/AjaxAttributesController.php (lines: 1)
+    [7] 	 * @author    Rodrigo Lopes <rodrigo.lopes@fixeads.com> 
+    
+    [file] admin/controller/AjaxCompaniesController.php (lines: 1)
+    [7] 	 * @author Rodrigo Lopes <rodrigo.lopes@fixeds.com> 
+    ...
 ```
 
 -----------------------
