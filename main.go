@@ -17,7 +17,7 @@ import (
 	"github.com/rodkranz/ff/replace"
 )
 
-const VER = "1.1.1"
+const VER = "1.2.0"
 
 var conf = &configuration{}
 
@@ -135,7 +135,7 @@ func main() {
 		os.Exit(1)
 	}
 
-
+	layout.Clear()
 	if conf.rpConfig.WithReplace {
 		// Draw result with Replace
 		rpl := replace.NewReplace(conf.rpConfig)

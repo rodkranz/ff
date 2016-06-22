@@ -104,6 +104,9 @@ func (l *Layout) askToReplaceComment(elm ff.Element, rpl replace.Replace, force 
 	}
 }
 
+func (l *Layout) Clear() {
+	fmt.Printf("\r                                  \r")
+}
 func (l *Layout) ShowWait() {
 	fmt.Printf("Searching please wait... \r")
 }
