@@ -22,7 +22,7 @@ func NewUpdate(conf Config) *Update {
 	return &Update{config: conf}
 }
 
-func (u *Update) Check() (string, string, bool) {
+func (u *Update) Check() (string, string, string, bool) {
 	res, err := http.Get(u.config.Url)
 	if err != nil {
 		log.Fatal(err)
@@ -39,19 +39,19 @@ func (u *Update) Check() (string, string, bool) {
 	tag := reg.Find(bytes)
 
 	if len(tag) == 0 {
-		return "", "", false
+		return "", "", "", false
 	}
 
 	split := strings.Split(u.config.Regex, "[ANY]")
 
 	if len(tag) < len(split[0]) {
-		return "", "", false
+		return "", "", "", false
 	}
 
 	tag        = tag[len(split[0]):len(tag) - 1]
 	tagString := string(tag)
 
-	return tagString, u.config.Version, (tagString != u.config.Version)
+	return tagString, u.config.Version, u.config.Url, (tagString != u.config.Version)
 }
 
 func (u *Update) Update() {

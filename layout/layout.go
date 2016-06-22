@@ -116,7 +116,7 @@ func (l *Layout) ShowVersion(ver string) {
 	fmt.Printf("The current version of FF is %v\n", ver)
 }
 
-func (l *Layout) ShowUpdate(verNew, verOld string, has bool) bool {
+func (l *Layout) ShowUpdate(verNew, verOld, link string, has bool) bool {
 
 	if (!has) {
 		fmt.Printf("The application already updated with latest version.\n")
@@ -128,7 +128,10 @@ The [FF] application has update available.
    Version Current: %v
  Version Available: %v
 
-`, verOld, verNew)
-	return l.bash.Confirm("Would you like to update? [Y/N]");
-	//return false
+Check Link: %s
+`, verOld, verNew, link)
+
+
+	//return l.bash.Confirm("Would you like to update? [Y/N]");
+	return false
 }
