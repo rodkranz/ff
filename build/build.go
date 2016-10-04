@@ -13,7 +13,7 @@ import (
 	"os"
 )
 
-const sourcePath = "/home/rlopes/Codes/go/src/github.com/rodkranz/ff"
+const sourcePath = "/home/rlopes/Code/go/src/github.com/rodkranz/ff/"
 
 const tmpBash = "_build.sh"
 

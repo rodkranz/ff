@@ -21,8 +21,8 @@ func NewLayout(b *terminal.Bash) *Layout {
 
 func (l *Layout) GetUsage(app, desc, ver string) func() {
     return func() {
-
         fmt.Printf("NAME: \t %v - %v\n", l.bash.Blue(app), l.bash.White(desc))
+        //fmt.Printf("%v", l.bash.Blue(fmt.Sprintf("\n\t\t### %v - %v ###\n\n", app, desc)))
         fmt.Printf("USAGE:\t %v %v\n", l.bash.Blue(path.Base(os.Args[0])), l.bash.White("[arguments...]"))
         fmt.Printf("VER:  \t %v\n", l.bash.Blue(ver))
 

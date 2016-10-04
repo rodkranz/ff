@@ -6,7 +6,7 @@ Find File or text in file with go language.
 ### Source Find File ###
 
 * Find text or file name 
-* Version: 1.1.2
+* Version: 1.2.0
 * License: ISC
 
 
@@ -42,31 +42,23 @@ Find File or text in file with go language.
 ##### Helper: 
 
 ```
-    Usage of ./ff:
-      --exclude-dir string
-            Exclude dir from reader (default ".bzr,CVS,.git,.hg,.svn")
-      --no-color
-            Disable color output
-      -cis
-            Search text case insensitive
-      -cpu int
-            Number of CPU you have 4 available (default 4)
-      -d string
-            Directory ffConfig (default "./")
-      -f string
-            Filter by file name
-      -force
-            Replace all result without ask.
-      -reg
-            Search by this Regex
-      -replace string
-            Replace result to text
-      -t string
-            Text ffConfig
-      -up
-            Check update
-      -ver
-            Show the version
+NAME:    FF - Find Text Or File.
+USAGE:   ff [arguments...]
+VER:     1.2.0
+COMMANDS:
+        -exclude-dir:    Exclude dir from reader [default: .bzr,CVS,.git,.hg,.svn] 
+        -no-color:       Disable color output [default: false] 
+        cis:             Search text case insensitive [default: false] 
+        cpu:             Number of CPU you have 4 available [default: 4] 
+        d:               Set a specify directory [default: ./] 
+        f:               Filter by file name  
+        force:           Replace all result without ask. [default: false] 
+        reg:             Search by this Regex [default: false] 
+        replace:         Replace result to text  
+        t:               Text that you are looking for  
+        up:              Check update [default: false] 
+        ver:             Show the version [default: false] 
+
 ```
 
 -----------------------
