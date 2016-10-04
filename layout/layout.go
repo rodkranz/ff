@@ -147,8 +147,19 @@ func (l *Layout) newLine() {
     fmt.Printf("\n")
 }
 
-func (l *Layout) ShowVersion(ver string) {
-    fmt.Printf("The current version of FF is %v\n", ver)
+func (l *Layout) ShowVersion(app, ver, link string) {
+    fmt.Println("---------------------------------------------------------------")
+    fmt.Println("      This program has written by Rodrigo Lopes.")
+    fmt.Println("      Only for academic purposes")
+    fmt.Println("---------------------------------------------------------------")
+    fmt.Printf("    Name    : %v\n", app)
+    fmt.Printf("    Version : %v\n", ver)
+    fmt.Println("    Language: GO Language")
+    fmt.Println("    License : ISC")
+    fmt.Printf("    Project : %v\n", link)
+    fmt.Println("    Contact : dev.rodrigo.lopes@gmail.com")
+    fmt.Println("---------------------------------------------------------------")
+    os.Exit(0)
 }
 
 func (l *Layout) ShowUpdate(verNew, verOld, link string, has bool) bool {

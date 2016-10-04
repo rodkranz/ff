@@ -21,6 +21,7 @@ const (
     APP string = "FF"
     DESC string = "Find Text Or File."
     VER string = "1.2.0"
+    GITHUB string = "https://github.com/rodkranz/ff/releases"
 )
 
 var conf = &configuration{}
@@ -29,7 +30,7 @@ func init() {
     // configuration of update
     conf.upConfig = update.Config{
         VER,
-        `https://github.com/rodkranz/ff/releases`,
+        GITHUB,
         `href=\"/rodkranz/ff/releases/tag/[ANY]\"`,
     }
 
@@ -110,7 +111,7 @@ func main() {
 
         // show the current version of program
         if conf.showVersion {
-            draw.ShowVersion(VER)
+            draw.ShowVersion(APP, VER, GITHUB)
             os.Exit(0)
         }
 

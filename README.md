@@ -69,7 +69,7 @@ Without parameters will show everything in subfolders.
 
 ```
     $ ff
-    [dir] ./g please wait... 
+    [dir] ./ 
     [dir] admin
     [file] admin/config.dev.ini
     [file] admin/config.ini
@@ -83,7 +83,7 @@ Without parameters will show everything in subfolders.
 
 With one parameter will find for text.
 ```
-	$ ff rodrigo 
+    $ ff rodrigo 
     [file] admin/controller/AjaxAdminController.php (lines: 1)
     [7] 	 * @author    Rodrigo Lopes <rodrigo.lopes@fixeads.com> 
     
@@ -102,7 +102,7 @@ With one parameter will find for text.
 Parameter `-f` of file, this parameter you will define the name of file  that you should like to filter
 
 ```
-	$ ff -f css                                                                                                                                                                                                                   develop  ✭
+    $ ff -f css                                                                                                                                                                                                                   develop  ✭
     [dir] admin/resources/css
     [file] admin/resources/css/adminLogin.css
     [file] admin/resources/css/adminTheme.css
@@ -117,7 +117,7 @@ Parameter `-f` of file, this parameter you will define the name of file  that yo
 Parameter `-t` of text, this text that you will search inside of file.
 	
 ```
-	$ ff -t rodrigo
+    $ ff -t rodrigo
     [file] admin/controller/AjaxAdminController.php (lines: 1)
     [7] 	 * @author    Rodrigo Lopes <rodrigo.lopes@fixeads.com> 
     
@@ -137,13 +137,13 @@ Parameter `-cpu`, this parameter you will define the number of cpu the program c
 
 Normal use:
 ```
-	$ ff -t log
-	ff -t "log"  0.01s user 0.01s system 70% cpu 0.034 total
+    $ ff -t log
+    ff -t "log"  0.01s user 0.01s system 70% cpu 0.034 total
 ```
 
 Four CPU use:
 ```
-	$ ff -t log -cpu 4
+    $ ff -t log -cpu 4
     ff -t "log" -cpu 4  0.01s user 0.01s system *159%* cpu 0.024 total
 ```
 
@@ -155,23 +155,19 @@ Four CPU use:
 With parameter `-r` as regex will defined that your `-t` is a regular expression
 
 ```
-	$ ff -r -t "(rlopes)|(consectetur)"
-	----------------------------------------------------------------------------------------------------
-	Path : ./
-	Regex: (rlopes)|(consectetur)
-	----------------------------------------------------------------------------------------------------
-	[File] lookingFor/resources/css/none.txt 
-		[1] sit amet, consectetur adipisici
-		[4] sit amet, consectetur adipisici
-	----------------------------------------------------------------------------------------------------
-	[File] lookingFor/resources/css/toastr.css 
-		[144] .rlopes { lorem i
-	----------------------------------------------------------------------------------------------------
-	[File] lookingFor/services.dev.ini 
-		[3] omain = ".rlopes.realestat
-		[6] = 'http://rlopes.realestat
-		[15] = 'http://rlopes.realestat
-	----------------------------------------------------------------------------------------------------
+    $ ff -r -t "(rlopes)|(consectetur)"
+    [File] lookingFor/resources/css/none.txt 
+    	[1] sit amet, consectetur adipisici
+    	[4] sit amet, consectetur adipisici
+    ----------------------------------------------------------------------------------------------------
+    [File] lookingFor/resources/css/toastr.css 
+    	[144] .rlopes { lorem i
+    ----------------------------------------------------------------------------------------------------
+    [File] lookingFor/services.dev.ini 
+    	[3] omain = ".rlopes.realestat
+    	[6] = 'http://rlopes.realestat
+    	[15] = 'http://rlopes.realestat
+    ----------------------------------------------------------------------------------------------------
 ```
 
 -----------------------
@@ -181,17 +177,12 @@ With parameter `-r` as regex will defined that your `-t` is a regular expression
 you can match both of the parameters as `-t` and `-f` to create more complex search
 
 ```
-	$ ff -t "rlopes" -f ini
-	----------------------------------------------------------------------------------------------------
-	Path : ./
-	File : ini
-	Text : rlopes
-	----------------------------------------------------------------------------------------------------
-	[File] lookingFor/services.dev.ini 
-		[3] omain = ".rlopes.realestat
-		[6] = 'http://rlopes.realestat
-		[15] = 'http://rlopes.realestat
-	----------------------------------------------------------------------------------------------------
+    $ ff -t "rlopes" -f ini
+    [File] lookingFor/services.dev.ini 
+    	[3] omain = ".rlopes.realestat
+    	[6] = 'http://rlopes.realestat
+    	[15] = 'http://rlopes.realestat
+    ----------------------------------------------------------------------------------------------------
 ```
 
 -----------------------
@@ -201,18 +192,13 @@ you can match both of the parameters as `-t` and `-f` to create more complex sea
 The `-d` parameter will active the debug mode, you can see the time of searching (more things coming soon)
 
 ```
-	$ ff -t "rlopes" -f ini -d
-	----------------------------------------------------------------------------------------------------
-	Path : ./
-	File : ini
-	Text : rlopes
-	----------------------------------------------------------------------------------------------------
-	[File] lookingFor/services.dev.ini 
-		[3] omain = ".rlopes.realestat
-		[6] = 'http://rlopes.realestat
-		[15] = 'http://rlopes.realestat
-	----------------------------------------------------------------------------------------------------
-	final Execution took 2.031182ms
+    $ ff -t "rlopes" -f ini -d
+    [File] lookingFor/services.dev.ini 
+    	[3] omain = ".rlopes.realestat
+    	[6] = 'http://rlopes.realestat
+    	[15] = 'http://rlopes.realestat
+    ----------------------------------------------------------------------------------------------------
+    final Execution took 2.031182ms
 ```
 
 -----------------------
