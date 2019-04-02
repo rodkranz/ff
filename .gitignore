@@ -8,3 +8,4 @@ tmp/
 *.trace
 *.output
 ff
+.DS_Store
