@@ -1,3 +1,11 @@
 #!/usr/bin/env bash
 
-./ff search -d "./test-dir/" -f "Gopkg.toml" github.com
+rm ./tmp/ff
+
+make build-dev
+
+./tmp/ff
+
+ls -la ./tmp/
+
+go tool trace ./tmp/t.out

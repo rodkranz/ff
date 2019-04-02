@@ -8,7 +8,8 @@ reset-dep:
 	dep init
 
 build-dev:
-	go build -o ff ./cmd/search/main.go
+	go build -o ./tmp/ff ./cmd/search/main.go
 
 build: reset
+	go clean
 	go build -o ff ./cmd/search/main.go

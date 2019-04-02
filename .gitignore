@@ -1,2 +1,10 @@
 .idea
 /test
+vendor/
+__experiments/
+tmp/
+*.debug
+*.profiling
+*.trace
+*.output
+ff
