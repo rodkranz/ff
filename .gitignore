@@ -2,7 +2,9 @@
 /test
 vendor/
 
-tmp/
+./tmp/output
+./tmp/test-dir
+./tmp/trace
 *.debug
 *.profiling
 *.trace
