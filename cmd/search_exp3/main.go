@@ -2,8 +2,8 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"context"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -11,13 +11,18 @@ import (
 	"runtime"
 	"runtime/trace"
 	"strings"
+	"sync"
 	"time"
 )
 
 const (
 	SymbolDirectory = "[D]"
 	SymbolFile      = "[F]"
+
+	TracePath  = "./tmp/trace/"
 )
+
+var Prefix = "03"
 
 type Config struct {
 	Dir      string
@@ -47,9 +52,7 @@ func (i Item) GetType() string {
 }
 
 func main() {
-	runtime.GOMAXPROCS(2)
-
-	traceFileName := fmt.Sprintf("./tmp/trace/%v.trace", time.Now().UTC().Unix())
+	traceFileName := fmt.Sprintf("%s%s_%d.trace", TracePath, Prefix, time.Now().UnixNano())
 
 	if traceFile, err := os.Create(traceFileName); err != nil {
 		fmt.Println("Debug is not supported: ", err.Error())
@@ -70,15 +73,20 @@ func main() {
 	}
 
 	cfg := Config{
-		// Dir: "./tmp/test-dir/",
-		Dir: "/Users/rodkranz/Projects/Go/src/git.naspersclassifieds.com/olxeu/ecosystem/libs",
-		// FileName: "Gopkg.toml",
-		Text: "MinimumNArgs",
-		Avoid: []string{
-			".git", ".idea",
-		},
+		Avoid:  []string{".git", ".idea"},
 		output: os.Stdout,
 		ctx:    context.Background(),
+	}
+
+	cpus := flag.Int("cpus", runtime.NumCPU(), "number os virtual cores")
+	flag.StringVar(&cfg.Dir, "dir", "", "directory where ff will search")
+	flag.StringVar(&cfg.Text, "text", "", "write the text you need to find")
+	flag.Parse()
+
+	if cpus != nil {
+		runtime.GOMAXPROCS(*cpus)
+	} else {
+		runtime.GOMAXPROCS(runtime.NumCPU())
 	}
 
 	// Start filter files
@@ -86,12 +94,8 @@ func main() {
 	filtered := FilterNames(cfg, items)
 	// End filter files
 
-	// search by text inside files
-	output := Output(cfg, filtered)
-	// End filter files
-
 	// Printer
-	PrintOutput(cfg, output)
+	go PrintOutput(cfg, filtered)
 	// End Printer
 
 	// function walk by all the files
@@ -110,37 +114,47 @@ func main() {
 		panic(err)
 	}
 
-	time.Sleep(time.Second * 2)
+	// time.Sleep(time.Second * 2)
 }
 
-func Output(cfg Config, items chan Item) chan Item {
-	output := make(chan Item)
-
+func FilterNames(cfg Config, items chan Item) chan Item {
+	filtered := make(chan Item)
 	go func() {
 		for item := range items {
 			func() {
-				ctx, tt := trace.NewTask(cfg.ctx, "SearchContent-"+item.path)
+				ctx, tt := trace.NewTask(cfg.ctx, item.path)
 				defer tt.End()
 
-				reg := trace.StartRegion(ctx, "OpenFile")
+				// filtering by name
+				// -------------------
+				reg := trace.StartRegion(ctx, "ValidatingName")
+				if cfg.FileName != "" && !strings.Contains(cfg.FileName, item.fileInfo.Name()) {
+					reg.End()
+					return
+				}
+				reg.End()
+				// -------------------
+
+				// search_exp3 inside files
+				// -------------------
+				reg = trace.StartRegion(ctx, "OpenFile")
 				file, err := os.OpenFile(item.path, os.O_RDONLY, 0666)
 				if err != nil {
+					reg.End()
+
 					item.err = err
-					output <- item
+					filtered <- item
 					return
 				}
 				defer file.Close()
 				reg.End()
 
-				// if traceFile.config.CaseInsensitive {
-				// 	traceFile.config.Text = strings.ToLower(traceFile.config.Text)
-				// }
-
+				// Variable to help us to collect information
 				foundLines := make(map[int]string)
-
 				numLine := 0
 				scanner := bufio.NewScanner(file)
 
+				// loop by lines looking for a text
 				reg = trace.StartRegion(ctx, "ScanLines")
 				for scanner.Scan() {
 					numLine++
@@ -150,46 +164,14 @@ func Output(cfg Config, items chan Item) chan Item {
 					if strings.Contains(line, cfg.Text) {
 						foundLines[numLine] = line
 					}
-
-					// 	if traceFile.config.CaseInsensitive {
-					// 		line = strings.ToLower(line)
-					// 	}
-					//
-					// 	traceFile.searchByText(e, numLine, line)
-					// 	traceFile.searchByRegex(e, numLine, line)
 				}
 				reg.End()
 
 				item.lines = numLine
 				item.found = foundLines
 
-				output <- item
-			}()
-		}
-		close(output)
-	}()
-
-	return output
-}
-
-func FilterNames(cfg Config, items chan Item) chan Item {
-	filtered := make(chan Item)
-	go func() {
-		for item := range items {
-			func() {
-				ctx, tt := trace.NewTask(cfg.ctx, "FilterByName"+item.path)
-				defer tt.End()
-
-				reg := trace.StartRegion(ctx, "OpenFile")
-				defer reg.End()
-
-				if cfg.FileName == "" {
-					filtered <- item
-				}
-
-				if strings.Contains(cfg.FileName, item.fileInfo.Name()) {
-					filtered <- item
-				}
+				// -------------------
+				filtered <- item
 			}()
 		}
 
@@ -198,23 +180,18 @@ func FilterNames(cfg Config, items chan Item) chan Item {
 	return filtered
 }
 
-func PrintOutput(cfg Config, output chan Item) {
-	go func() {
+func PrintOutput(cfg Config, outputs ...chan Item) {
+	var wg sync.WaitGroup
+	output := func(c chan Item) {
 		ctx, tt := trace.NewTask(cfg.ctx, "Output")
-		defer tt.End()
+		defer func() {
+			tt.End()
+			wg.Done()
+		}()
 
-		var w io.Writer
-		b := &bytes.Buffer{}
-
-		// control where ff will write the output.
-		if cfg.output != nil {
-			w = cfg.output
-		} else {
-			w = bufio.NewWriter(b)
-		}
-
+		w := cfg.output
 		reg := trace.StartRegion(ctx, "PrintOutput")
-		for item := range output {
+		for item := range c {
 			fmt.Fprintf(w, "%s %v\n", item.GetType(), item.path)
 			for i, l := range item.found {
 				fmt.Fprintf(w, "[%d] %v\n", i, l)
@@ -225,5 +202,12 @@ func PrintOutput(cfg Config, output chan Item) {
 			}
 		}
 		reg.End()
-	}()
+	}
+
+	wg.Add(len(outputs))
+	for _, c := range outputs {
+		go output(c)
+	}
+
+	wg.Wait()
 }

@@ -2,10 +2,13 @@ package main
 
 import (
 	"bufio"
-	"bytes"
+	"context"
+	"flag"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"runtime/trace"
 	"strings"
 	"time"
@@ -14,7 +17,21 @@ import (
 const (
 	SymbolDirectory = "[D]"
 	SymbolFile      = "[F]"
+
+	TracePath  = "./tmp/trace/"
 )
+
+var Prefix = "01"
+
+type Config struct {
+	Dir      string
+	FileName string
+	Text     string
+	Avoid    []string
+
+	output io.Writer
+	ctx    context.Context
+}
 
 type Item struct {
 	fileInfo os.FileInfo
@@ -34,22 +51,41 @@ func (i Item) GetType() string {
 }
 
 func main() {
-	trace.Start(os.Stdout)
-	defer trace.Stop()
 
-	cfg := struct {
-		Dir      string
-		FileName string
-		Text     string
-		Avoid    []string
-	}{
+	traceFileName := fmt.Sprintf("%s%s_%d.trace", TracePath, Prefix, time.Now().UnixNano())
+	if traceFile, err := os.Create(traceFileName); err != nil {
+		fmt.Println("Debug is not supported: ", err.Error())
+	} else {
+		if err := trace.Start(traceFile); err != nil {
+			fmt.Println("Cannot close successfully the trace traceFile: ", err.Error())
+			if err := traceFile.Close(); err != nil {
+				fmt.Println("Cannot close successfully the trace traceFile: ", err.Error())
+			}
+		} else {
+			defer func() {
+				trace.Stop()
+				if err := traceFile.Close(); err != nil {
+					fmt.Println("Cannot close successfully the trace traceFile: ", err.Error())
+				}
+			}()
+		}
+	}
 
-		Dir: "./tmp/test-dir/",
-		// FileName: "Gopkg.toml",
-		Text: "MinimumNArgs",
-		Avoid: []string{
-			".git", ".idea",
-		},
+	cfg := Config{
+		Avoid:  []string{".git", ".idea"},
+		output: os.Stdout,
+		ctx:    context.Background(),
+	}
+
+	cpus := flag.Int("cpus", runtime.NumCPU(), "number os virtual cores")
+	flag.StringVar(&cfg.Dir, "dir", "", "directory where ff will search")
+	flag.StringVar(&cfg.Text, "text", "", "write the text you need to find")
+	flag.Parse()
+
+	if cpus != nil {
+		runtime.GOMAXPROCS(*cpus)
+	} else {
+		runtime.GOMAXPROCS(runtime.NumCPU())
 	}
 
 	items := make(chan Item)
@@ -73,7 +109,7 @@ func main() {
 	}
 	// End filter files
 
-	// search by text inside files
+	// search_exp3 by text inside files
 	ptln := make(chan Item)
 	{
 		searchText := func() {
@@ -126,8 +162,7 @@ func main() {
 	// Printer
 	{
 		printer := func() {
-			b := &bytes.Buffer{}
-			w := bufio.NewWriter(b)
+			w := cfg.output
 
 			for item := range ptln {
 				fmt.Fprintf(w, "%s %v\n", item.GetType(), item.path)
@@ -138,15 +173,6 @@ func main() {
 				if item.err != nil {
 					fmt.Fprintf(w, " ---> %s <--- \n", item.err)
 				}
-			}
-
-			outputFileName := fmt.Sprintf("./tmp/output/%d.log", time.Now().UTC().Unix())
-			f, err := os.OpenFile(outputFileName, os.O_CREATE|os.O_TRUNC, 0755)
-			if err != nil {
-				panic(err)
-			}
-			if err := f.Close(); err != nil {
-				panic(err)
 			}
 		}
 		go printer()
